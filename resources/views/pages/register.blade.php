@@ -17,11 +17,24 @@
                                 @csrf
                                 <div class="form-group">
                                     <input type="text"
+                                        class="form-control form-control-lg @error('username')
+                                        is-invalid
+                                    @enderror"
+                                        value="{{ old('username') }}" id="exampleInputUsername1" name="username"
+                                        placeholder="NIK CALON SISWA">
+                                    @error('username')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <input type="text"
                                         class="form-control form-control-lg @error('name')
                                         is-invalid
                                     @enderror"
                                         value="{{ old('name') }}" id="exampleInputUsername1" name="name"
-                                        placeholder="NIK Calon Siswa">
+                                        placeholder="NAMA LENGKAP">
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -33,7 +46,7 @@
                                         class="form-control form-control-lg @error('email')
                                         is-invalid
                                     @enderror"
-                                        id="exampleInputEmail1" placeholder="Email">
+                                        id="exampleInputEmail1" placeholder="EMAIL  ">
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -44,7 +57,7 @@
                                     <div class="input-group">
                                         <input type="password" name="password"
                                             class="form-control form-control-lg @error('password') is-invalid @enderror"
-                                            id="password" placeholder="Password">
+                                            id="password" placeholder="PASSWORD">
 
                                         <span class="input-group-text"
                                             onclick="togglePassword('password', 'togglePasswordIcon')">
@@ -62,7 +75,7 @@
                                     <div class="input-group">
                                         <input type="password" name="konfirmasi"
                                             class="form-control form-control-lg @error('konfirmasi') is-invalid @enderror"
-                                            id="konfirmasi" placeholder="Konfirmasi Password">
+                                            id="konfirmasi" placeholder="KONFIRMASI PASSWORD">
 
                                         <span class="input-group-text"
                                             onclick="togglePassword('konfirmasi', 'toggleKonfirmasiIcon')">
@@ -77,13 +90,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-4">
-                                    <div class="form-check">
-                                        <label class="form-check-label text-muted">
-                                            <input type="checkbox" class="form-check-input"> I agree to all Terms &
-                                            Conditions </label>
-                                    </div>
-                                </div>
+
                                 <div class="mt-3 d-grid gap-2">
                                     <button
                                         class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"

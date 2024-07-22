@@ -26,7 +26,7 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <form action="{{ route('validasi-berkas.index') }}" method="GET">
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
 
                                         <select name="gelombang_id" id="gelombang_id" class="form-select form-select-lg">
                                             @foreach ($gelombangList as $gelombang)
@@ -36,7 +36,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div>
+                                    </div> --}}
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group">

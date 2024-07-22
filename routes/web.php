@@ -25,6 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return view('pages.dashboard');
     })->name('dashboard');
     Route::resource('calon-siswa', SiswaController::class);
+    Route::get('pembayaran-siswa', [PembayaranController::class, 'pembayaranSiswa'])->name('pembayaranSiswa');
 });
 
 
@@ -32,10 +33,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     // Rute khusus user
 
     Route::resource('tahun-ajaran', TahunController::class);
-    Route::resource('gelombang', GelombangController::class);
+    // Route::resource('gelombang', GelombangController::class);
     Route::resource('list-berkas', ListBerkasController::class);
     Route::resource('validasi-berkas', BerkasController::class);
     Route::resource('pembayaran', PembayaranController::class);
+
     Route::get('findBerkas', [ListBerkasController::class, 'findById'])->name('listberkas');
     Route::resource('user', UserController::class);
 

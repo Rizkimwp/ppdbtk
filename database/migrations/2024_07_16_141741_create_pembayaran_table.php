@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('payment_date')->useCurrent();
             $table->string('transaction_id')->unique();
             $table->enum('status', ['belum_lunas', 'lunas', 'gagal']);
+            $table->string('file_path');
             $table->timestamps();
             $table->foreignId('calon_siswa_id');
         });

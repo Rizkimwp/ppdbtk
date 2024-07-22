@@ -40,6 +40,8 @@ return new class extends Migration
             $table->string('nama_wali')->nullable();
             $table->string('nomor_wali')->nullable();
             $table->foreignId('pekerjaan_wali_id')->nullable();
+            $table->foreignId('tahun_ajaran_id');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }

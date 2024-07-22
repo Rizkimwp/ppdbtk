@@ -26,13 +26,13 @@
                             <form class="pt-3" action="{{ route('loginpost') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-lg" name="name" id="name"
-                                        placeholder="Username">
+                                    <input type="text" class="form-control form-control-lg" name="username"
+                                        id="username" required placeholder="Username">
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <input type="password" name="password"
-                                            class="form-control form-control-lg @error('password') is-invalid @enderror"
+                                            class="form-control form-control-lg @error('password') is-invalid @enderror"required
                                             id="password" placeholder="Password">
 
                                         <span class="input-group-text"

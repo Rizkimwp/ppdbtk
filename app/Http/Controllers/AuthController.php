@@ -20,7 +20,12 @@ class AuthController extends Controller
     }
 
     public function loginsso() {
-        return view('pages.login_sso');
+        if(Auth::check()) {
+            return redirect ('/dashboard');
+
+        }else{
+            return view('pages.login_sso');
+        }
         }
 
     public function showregister() {
@@ -30,7 +35,8 @@ class AuthController extends Controller
     public function registerSiswa(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:16',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:16|min:16',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
             'konfirmasi' => 'required|string|same:password',
@@ -38,9 +44,10 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin'
+            'role' => 'siswa'
         ]);
 
         return redirect()->route('login')->with('success','User berhasil terdaftar, Silahkan Login');
@@ -48,7 +55,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        if (Auth::attempt($request->only('name', 'password'))) {
+        if (Auth::attempt($request->only('username', 'password'))) {
             return redirect()->route('dashboard'); // Mengarahkan ke rute dashboard
         }
 

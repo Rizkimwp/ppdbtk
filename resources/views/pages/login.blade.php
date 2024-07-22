@@ -25,14 +25,14 @@
                             <form class="pt-3" action="{{ route('loginpost') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-lg" name="name" id="name"
-                                        placeholder="NIK Calon Siswa">
+                                    <input type="text" class="form-control form-control-lg" name="username"
+                                        id="username" required placeholder="NIK Calon Siswa">
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <input type="password" name="password"
                                             class="form-control form-control-lg @error('password') is-invalid @enderror"
-                                            id="password" placeholder="Password">
+                                            required id="password" placeholder="Password">
 
                                         <span class="input-group-text"
                                             onclick="togglePassword('password', 'togglePasswordIcon')">
@@ -57,7 +57,7 @@
                                 <div class="mt-3 d-grid gap-2">
                                     <button
                                         class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
-                                        type="submit">Login</button>
+                                        type="submit">LOGIN</button>
                                 </div>
                                 <div class="my-2 d-flex justify-content-between align-items-center">
 
@@ -66,10 +66,10 @@
                                     </div>
                                     <a href="#" class="auth-link text-primary">Lupa Password?</a>
                                 </div>
-                                <div class="mt-5 d-grid gap-1 ">
+                                {{-- <div class="mt-5 d-grid gap-1 ">
                                     <a class="btn btn-block btn-gradient-dark btn-lg font-weight-medium auth-form-btn"
                                         href="{{ route('loginsso') }}">LOGIN SSO</a>
-                                </div>
+                                </div> --}}
                             </form>
                         </div>
                     </div>

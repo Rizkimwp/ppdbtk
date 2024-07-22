@@ -19,8 +19,5 @@ class Gelombang extends Model
     {
         return $this->belongsTo(TahunAjaran::class);
     }
-    public function siswa()
-    {
-        return $this->hasMany(CalonSiswa::class, 'gelombang_id');
-    }
+
 }

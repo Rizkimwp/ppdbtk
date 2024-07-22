@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Agama;
+use Ramsey\Uuid\Uuid;
+use App\Models\Ruangan;
 use App\Models\Gelombang;
 use App\Models\Pekerjaan;
 use App\Models\Pembayaran;
 use App\Models\Pendidikan;
 use App\Models\BerkasSiswa;
 use App\Models\Penghasilan;
+use App\Models\TahunAjaran;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Ramsey\Uuid\Uuid;
+
 class CalonSiswa extends Model
 {
     use HasFactory, Notifiable;
@@ -48,7 +52,9 @@ class CalonSiswa extends Model
         'nama_wali',
         'nomor_wali',
         'pekerjaan_wali_id',
-        'gelombang_id'
+        'gelombang_id',
+        'user_id',
+        'tahun_ajaran_id'
     ];
 
     public static function generateNoPendaftaran()
@@ -59,10 +65,17 @@ class CalonSiswa extends Model
     return "{$uuid}";
 }
 
-
-public function gelombang()
+public function ruangan()
+{
+    return $this->belongsToMany(Ruangan::class, 'calon_siswa_id');
+}
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+public function tahunajaran()
     {
-        return $this->belongsTo(Gelombang::class, 'gelombang_id');
+        return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
     public function berkas()
 {

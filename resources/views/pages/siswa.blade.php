@@ -28,7 +28,7 @@
                             <div class="col-md-5">
                                 <form action="{{ route('calon-siswa.index') }}" method="GET">
                                     <div class="form-group">
-
+                                        {{--
                                         <select name="gelombang_id" id="gelombang_id" class="form-select form-select-lg">
                                             @foreach ($gelombangList as $gelombang)
                                                 <option value="{{ $gelombang->id }}"
@@ -36,7 +36,7 @@
                                                     {{ $gelombang->tahunAjaran->tahun_ajaran }}/{{ $gelombang->gelombang }}
                                                 </option>
                                             @endforeach
-                                        </select>
+                                        </select> --}}
                                     </div>
                             </div>
                             <div class="col-md-5">

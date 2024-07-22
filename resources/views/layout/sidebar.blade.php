@@ -46,9 +46,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('tahun-ajaran.index') }}">Tahun Ajaran</a>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a class="nav-link" href="{{ route('gelombang.index') }}">Gelombang</a>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </li>
@@ -130,6 +130,12 @@
                 <a class="nav-link" href="{{ route('calon-siswa.create') }}">
                     <span class="menu-title">Isi Biodata</span>
                     <i class="mdi mdi-plus-box menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pembayaranSiswa') }}">
+                    <span class="menu-title">Pembayaran</span>
+                    <i class="mdi mdi-contactless-payment menu-icon"></i>
                 </a>
             </li>
         @endif

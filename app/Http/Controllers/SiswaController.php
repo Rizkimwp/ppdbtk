@@ -25,18 +25,18 @@ class SiswaController extends Controller
     public function index(Request $request)
 {
     $query = CalonSiswa::query();
-    $gelombangList = Gelombang::with('tahunAjaran')->get();
+    // $gelombangList = Gelombang::with('tahunAjaran')->get();
 
-    // Cari berdasarkan gelombang
-    $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
+    // // Cari berdasarkan gelombang
+    // $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
 
-    if ($activeTahunAjaran) {
-        $gelombangId = $request->input('gelombang_id', Gelombang::where('tahun_ajaran_id', $activeTahunAjaran->id)->value('id'));
-        $query->where('gelombang_id', $gelombangId);
-    } else {
+    // if ($activeTahunAjaran) {
+    //     $gelombangId = $request->input('gelombang_id', Gelombang::where('tahun_ajaran_id', $activeTahunAjaran->id)->value('id'));
+    //     $query->where('gelombang_id', $gelombangId);
+    // } else {
 
-        return response()->view('pages.siswa', compact('gelombangList'))->withErrors('Tidak ada tahun ajaran aktif.');
-    }
+    //     return response()->view('pages.siswa', compact('gelombangList'))->withErrors('Tidak ada tahun ajaran aktif.');
+    // }
 
     // Cari berdasarkan nama
     if ($request->filled('nama')) {
@@ -45,7 +45,7 @@ class SiswaController extends Controller
 
     $siswa = $query->paginate(5);
 
-    return view('pages.siswa', compact('siswa', 'gelombangList', 'gelombangId'));
+    return view('pages.siswa', compact('siswa'));
 }
 
 
@@ -79,7 +79,7 @@ class SiswaController extends Controller
             'jenis_kelamin' => 'required|string',
             'alamat' => 'required|string|max:255',
             'telepon' => 'required|string|max:15',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
             'tinggi_badan' => 'required|string',
             'berat_badan' => 'required|string',
             'anak_ke' => 'required|string|min:1',
@@ -97,32 +97,46 @@ class SiswaController extends Controller
             'tahun_lahir_ayah' => 'required',
             'tahun_lahir_ibu' => 'required',
         ]);
+
         try {
+            $tahun = TahunAjaran::where('status', 'aktif')->first();
 
-            $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
-
-            if (!$activeTahunAjaran) {
-                return back()->with('error', 'Tidak ada tahun ajaran aktif.');
-            }
-
-            $gelombangs = Gelombang::where('tahun_ajaran_id', $activeTahunAjaran->id)
-            ->where('mulai', '<=', now()) // Tanggal mulai harus sebelum atau sama dengan tanggal sekarang
-            ->where('selesai', '>=', now()) // Tanggal selesai harus setelah atau sama dengan tanggal sekarang
-            ->get();
-
-            if ($gelombangs->isEmpty()) {
-                return back()->with('error', 'Tidak ada gelombang tersedia untuk tahun ajaran ini.');
+            if (!$tahun) {
+                return back()->with('error', 'Tidak ada tahun ajaran tersedia');
             }
 
             // Ambil tahun ajaran dan gelombang
-
-            $idGelombang = $gelombangs->first()->id; // Ambil nama gelombang pertama
+            $idGelombang = $tahun->id; // Ambil nama gelombang pertama
             $noPendaftaran = CalonSiswa::generateNoPendaftaran();
+
+            // Dapatkan pengguna yang sedang login
+            $currentUser = Auth::user();
+            $userId = null;
+
+            if ($currentUser->role === 'siswa') {
+                // Jika perannya siswa, gunakan user_id dari pengguna yang sedang login
+                $userId = $currentUser->id;
+            } elseif (in_array($currentUser->role, ['admin', 'super_admin'])) {
+                // Jika perannya admin atau super_admin, buat pengguna baru
+                $newUser = User::create([
+                    'username' => $validator['nik'],
+                    'name' => $validator['nama_lengkap'],
+                    'email' => $validator['email'],
+                    'password' => Hash::make('12345678'),
+                    'role' => 'siswa',
+                ]);
+
+                $userId = $newUser->id;
+            } else {
+                // Jika perannya tidak sesuai, kembalikan respon error
+                return redirect()->back()->withErrors(['role' => 'Invalid role.']);
+            }
 
             // Simpan data calon siswa
             $calonSiswa = new CalonSiswa($validator);
             $calonSiswa->nomor_pendaftaran = $noPendaftaran;
-            $calonSiswa->gelombang_id = $idGelombang;
+            $calonSiswa->tahun_ajaran_id = $idGelombang;
+            $calonSiswa->user_id = $userId;
             $calonSiswa->save();
 
             // Handle file uploads for documents (BerkasSiswa)
@@ -142,7 +156,8 @@ class SiswaController extends Controller
             // Tangani kesalahan jika terjadi
             return redirect()->back()->with('error', 'Terjadi Kesalahan: ' . $e->getMessage());
         }
-        }
+    }
+
 
 
 
