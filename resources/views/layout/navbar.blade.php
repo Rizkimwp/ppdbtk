@@ -11,14 +11,14 @@
             <span class="mdi mdi-menu"></span>
         </button>
         <div class="search-field d-none d-md-block">
-            <form class="d-flex align-items-center h-100" action="#">
+            {{-- <form class="d-flex align-items-center h-100" action="#">
                 <div class="input-group">
                     <div class="input-group-prepend bg-transparent">
                         <i class="input-group-text border-0 mdi mdi-magnify"></i>
                     </div>
                     <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
                 </div>
-            </form>
+            </form> --}}
         </div>
         <ul class="navbar-nav navbar-nav-right">
             <li class="nav-item nav-profile dropdown">
@@ -36,8 +36,13 @@
                     <a class="dropdown-item" href="#">
                         <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">
-                        <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="dropdown-item" type="submit">
+                            <i class="mdi mdi-logout me-2 text-primary"></i> Signout
+                        </button>
+                    </form>
+
                 </div>
             </li>
             <li class="nav-item d-none d-lg-block full-screen-link">
@@ -45,7 +50,7 @@
                     <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
                 </a>
             </li>
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="mdi mdi-email-outline"></i>
@@ -90,7 +95,7 @@
                     <div class="dropdown-divider"></div>
                     <h6 class="p-3 mb-0 text-center">4 new messages</h6>
                 </div>
-            </li>
+            </li> --}}
             <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
                     data-bs-toggle="dropdown">
@@ -141,16 +146,7 @@
                     <h6 class="p-3 mb-0 text-center">See all notifications</h6>
                 </div>
             </li>
-            <li class="nav-item nav-logout d-none d-lg-block">
-                <a class="nav-link" href="#">
-                    <i class="mdi mdi-power"></i>
-                </a>
-            </li>
-            <li class="nav-item nav-settings d-none d-lg-block">
-                <a class="nav-link" href="#">
-                    <i class="mdi mdi-format-line-spacing"></i>
-                </a>
-            </li>
+
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
             data-toggle="offcanvas">
