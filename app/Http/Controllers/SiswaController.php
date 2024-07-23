@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Agama;
 use Ramsey\Uuid\Uuid;
 use App\Models\Gelombang;
@@ -14,6 +15,8 @@ use App\Models\BerkasSiswa;
 use App\Models\Penghasilan;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,18 +28,18 @@ class SiswaController extends Controller
     public function index(Request $request)
 {
     $query = CalonSiswa::query();
-    // $gelombangList = Gelombang::with('tahunAjaran')->get();
+    $tahunAjaranList = TahunAjaran::get();
 
-    // // Cari berdasarkan gelombang
-    // $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
+    // Cari berdasarkan gelombang
+    $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
 
-    // if ($activeTahunAjaran) {
-    //     $gelombangId = $request->input('gelombang_id', Gelombang::where('tahun_ajaran_id', $activeTahunAjaran->id)->value('id'));
-    //     $query->where('gelombang_id', $gelombangId);
-    // } else {
+    if ($activeTahunAjaran) {
+        $tahunAjaranId = $request->input('tahun_ajaran_id', TahunAjaran::where('id', $activeTahunAjaran->id)->value('id'));
+        $query->where('tahun_ajaran_id', $tahunAjaranId);
+    } else {
 
-    //     return response()->view('pages.siswa', compact('gelombangList'))->withErrors('Tidak ada tahun ajaran aktif.');
-    // }
+        return view('pages.siswa', compact('tahunAjaranList'))->withErrors('Tidak ada tahun ajaran aktif.');
+    }
 
     // Cari berdasarkan nama
     if ($request->filled('nama')) {
@@ -45,7 +48,7 @@ class SiswaController extends Controller
 
     $siswa = $query->paginate(5);
 
-    return view('pages.siswa', compact('siswa'));
+    return view('pages.siswa', compact('siswa', 'tahunAjaranList', 'tahunAjaranId'));
 }
 
 
@@ -54,13 +57,19 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        //
+        $currentUser = Auth::user();
+        $siswa = null;
+
+        if ($currentUser->calonSiswa) {
+            $siswa = CalonSiswa::where('id', $currentUser->calonSiswa->id)->first();
+        }
+
         $listBerkas = ListBerkas::where('aktif', 1)->get();
         $agama = Agama::all();
         $pendidikan = Pendidikan::all();
         $pekerjaan = Pekerjaan::all();
         $penghasilan = Penghasilan::all();
-    return view('pages.pendaftaran', compact('listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan'));
+    return view('pages.pendaftaran', compact('listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan', 'siswa'));
     }
 
     /**
@@ -106,7 +115,7 @@ class SiswaController extends Controller
             }
 
             // Ambil tahun ajaran dan gelombang
-            $idGelombang = $tahun->id; // Ambil nama gelombang pertama
+            $tahunAjaranId = $tahun->id; // Ambil nama tahun ajaran pertama
             $noPendaftaran = CalonSiswa::generateNoPendaftaran();
 
             // Dapatkan pengguna yang sedang login
@@ -135,7 +144,7 @@ class SiswaController extends Controller
             // Simpan data calon siswa
             $calonSiswa = new CalonSiswa($validator);
             $calonSiswa->nomor_pendaftaran = $noPendaftaran;
-            $calonSiswa->tahun_ajaran_id = $idGelombang;
+            $calonSiswa->tahun_ajaran_id = $tahunAjaranId;
             $calonSiswa->user_id = $userId;
             $calonSiswa->save();
 

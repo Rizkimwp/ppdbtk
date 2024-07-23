@@ -40,6 +40,27 @@
                                 </span>
                             @enderror
                         </div>
+                        <div class="form-group">
+                            <label for="mulai">Tanggal Mulai</label>
+                            <input type="date" class="form-control @error('edit_mulai') is-invalid @enderror"
+                                id="edit_mulai" name="edit_mulai" required>
+                            @error('edit_mulai')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selesai">Tanggal Selesai</label>
+                            <input type="date" class="form-control @error('edit_selesai') is-invalid @enderror"
+                                id="edit_selesai" name="edit_selesai" required>
+                            @error('edit_selesai')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -58,7 +79,9 @@
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 const nama = this.getAttribute('data-nama');
-                const status = this.getAttribute('data-mulai');
+                const status = this.getAttribute('data-status');
+                const mulai = this.getAttribute('data-mulai');
+                const selesai = this.getAttribute('data-selesai');
 
 
                 // Set form action
@@ -68,6 +91,8 @@
                 // Fill form inputs
                 document.getElementById('edit_tahun_ajaran').value = nama;
                 document.getElementById('edit_status').value = status;
+                document.getElementById('edit_mulai').value = mulai;
+                document.getElementById('edit_selesai').value = mulai;
 
                 // Show the modal
                 $('#editModal').modal('show');

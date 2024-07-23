@@ -62,45 +62,89 @@
                         </p>
                         <div class="collapse show p-3 pt-0" id="collapseExample">
                             <div class="row">
-                                <div class="col-lg-5 mb-lg-0 mb-3">
+                                @if ($pembayaran)
+                                    <div class="col-lg-5 mb-lg-0 mb-3">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="fw-bold">PEMBAYARAN</td>
+                                                    <td class="c-green">Pendaftaran</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">JUMLAH</td>
+                                                    <td class="c-green">Rp{{ $pembayaran->amount }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">STATUS</td>
+                                                    <td class="c-green">
+                                                        @if ($pembayaran->status === 'lunas')
+                                                            <label class="badge badge-success">LUNAS</label>
+                                                        @elseif ($pembayaran->status === 'belum_lunas')
+                                                            <label class="badge badge-info">BELUM LUNAS</label>
+                                                        @elseif ($pembayaran->status === 'pending')
+                                                            <label class="badge badge-warning">MENUNGGU VALIDASI</label>
+                                                        @else
+                                                            <label class="badge badge-danger">TIDAK VALID</label>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            <tbody>
+                                        </table>
+                                        <p class="fw-bold text-danger mt-2">Note: Jika sudah transfer, silahkan upload bukti
+                                            transaksi
+                                            untuk di cek oleh admin
+                                        </p>
+                                    </div>
+                                @endif
 
-                                    <table class="table">
-
-                                        <tbody>
-                                            <tr>
-                                                <td class="fw-bold">PEMBAYARAN</td>
-                                                <td class="c-green">Pendaftaran</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">JUMLAH</td>
-                                                <td class="c-green">Rp65.000</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="fw-bold">STATUS</td>
-                                                <td class="c-green">Belum Lunas</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <p class="fw-bold text-danger mt-2">Note: Jika sudah transfer, silahkan upload bukti
-                                        transaksi
-                                        untuk di cek oleh admin
-                                    </p>
-                                </div>
-                                <div class="col-lg-7">
-                                    <form action="" class="form">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <input type="file" id="" name="file_berkas"
-                                                    class="form-control file-upload-default custom-file-input"
-                                                    placeholder="Masukan Bukti Transaksi Disini">
-
-
+                                <div class=" @if (!$pembayaran) col-lg-12 @else col-lg-7 @endif">
+                                    @if ($pembayaran)
+                                        <form action="{{ route('uploadbukti', $pembayaran->id) }}" class="form"
+                                            method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <input type="file" name="file_path"
+                                                        class="form-control file-upload-default custom-file-input @error('file_path') is-invalid @enderror"
+                                                        placeholder="Masukan Bukti Transaksi Disini">
+                                                    @error('file_path')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                    @enderror
+                                                </div>
+                                                <div class="col-12 mt-3">
+                                                    <button class="btn btn-primary w-100">Upload Bukti Transaksi</button>
+                                                </div>
                                             </div>
-                                            <div class="col-12 mt-3">
-                                                <div class="btn btn-primary w-100">Upload Bukti Transaksi</div>
-                                            </div>
+                                        </form>
+                                    @else
+                                        <div class="d-flex flex-column justify-content-center align-items-center mt-4">
+                                            <div class="text-center" id="lottie-animation"
+                                                style="width: 200px; height: 200px;"></div>
+                                            <p>Belum Ada Tagihan</p>
                                         </div>
-                                    </form>
+                                    @endif
+                                </div>
+                                <div class="col-lg-12">
+                                    @if (session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            {{ session('success') }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {{ session('error') }}
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -115,18 +159,15 @@
 
 @section('script')
     <script>
-        var uploadButtons = document.querySelectorAll('.btn-upload');
-
-        // Attach click event listeners to each button
-        uploadButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                // Find the associated file input
-                var fileInput = this.closest('.input-group').querySelector('.custom-file-input');
-                // Trigger click on the file input
-                if (fileInput) {
-                    fileInput.click();
-                }
-            });
+        const animationPath = '{{ asset('assets/animations/search.json') }}';
+        const animation = lottie.loadAnimation({
+            container: document.getElementById('lottie-animation'),
+            renderer: 'svg', // pilih renderer yang sesuai (svg/html/canvas)
+            loop: true,
+            autoplay: true,
+            path: animationPath // ganti dengan path animasi Lottie Anda
         });
     </script>
+
+
 @endsection

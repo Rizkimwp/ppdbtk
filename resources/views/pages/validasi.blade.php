@@ -26,17 +26,17 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <form action="{{ route('validasi-berkas.index') }}" method="GET">
-                                    {{-- <div class="form-group">
-
-                                        <select name="gelombang_id" id="gelombang_id" class="form-select form-select-lg">
-                                            @foreach ($gelombangList as $gelombang)
-                                                <option value="{{ $gelombang->id }}"
-                                                    {{ $gelombang->id == $gelombangId ? 'selected' : '' }}>
-                                                    {{ $gelombang->tahunAjaran->tahun_ajaran }}/{{ $gelombang->gelombang }}
+                                    <div class="form-group">
+                                        <select name="tahun_ajaran_id" id="tahun_ajaran_id"
+                                            class="form-select form-select-lg">
+                                            @foreach ($tahunAjaranList as $tahunAjaran)
+                                                <option value="{{ $tahunAjaran->id }}"
+                                                    {{ $tahunAjaranId == $tahunAjaran->id ? 'selected' : '' }}>
+                                                    {{ $tahunAjaran->tahun_ajaran }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div> --}}
+                                    </div>
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group">

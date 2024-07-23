@@ -39,7 +39,27 @@
                             </span>
                         @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="mulai">Tanggal Mulai</label>
+                        <input type="date" class="form-control @error('mulai') is-invalid @enderror" id="mulai"
+                            name="mulai" required>
+                        @error('mulai')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
 
+                    <div class="form-group">
+                        <label for="selesai">Tanggal Selesai</label>
+                        <input type="date" class="form-control @error('selesai') is-invalid @enderror" id="selesai"
+                            name="selesai" required>
+                        @error('selesai')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Save changes</button>

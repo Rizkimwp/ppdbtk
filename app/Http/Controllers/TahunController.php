@@ -45,16 +45,32 @@ class TahunController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+{
+    try {
         $validator = Validator::make($request->all(), [
             'tahun_ajaran' => ['required', 'string', 'max:255'],
             'status' => ['required', Rule::in(['aktif', 'tidak_aktif'])],
+            'mulai' => 'required|date',
+            'selesai' => 'required|date',
         ]);
 
         if ($validator->fails()) {
             return back()
                 ->withErrors($validator)
                 ->withInput();
+        }
+
+        // Custom validation rules
+        if (TahunAjaran::where('selesai', '>', $request->mulai)->where('mulai', '<=', $request->mulai)->exists()) {
+            return back()->with('error' ,'Tanggal mulai tidak boleh dalam range tahun ajaran yang belum selesai.');
+        }
+
+        if (TahunAjaran::whereBetween('mulai', [$request->mulai, $request->selesai])->orWhereBetween('selesai', [$request->mulai, $request->selesai])->exists()) {
+            return back()->with('error' ,'Tanggal mulai dan selesai tidak boleh bersinggungan dengan tahun ajaran yang sudah ada.');
+        }
+
+        if ($request->mulai > $request->selesai) {
+            return back()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
         }
 
         // Cek apakah ada tahun ajaran lain yang aktif
@@ -72,7 +88,10 @@ class TahunController extends Controller
 
         return redirect()->route('tahun-ajaran.index')
             ->with('success', 'Data berhasil disimpan.');
+    } catch (\Exception $e) {
+        return redirect()->route('tahun-ajaran.index')->with('error', 'Terjadi kesalahan');
     }
+}
 
     /**
      * Display the specified resource.
@@ -95,38 +114,61 @@ class TahunController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'edit_tahun_ajaran' => ['required', 'string', 'max:255'],
-            'edit_status' => ['required',  Rule::in(['aktif', 'tidak_aktif'])],
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'edit_tahun_ajaran' => ['required', 'string', 'max:255'],
+                'edit_status' => ['required', Rule::in(['aktif', 'tidak_aktif'])],
+                'edit_mulai' => 'required|date',
+                'edit_selesai' => 'required|date',
+            ]);
 
-        if ($validator->fails()) {
-            return back()
-                        ->withErrors($validator)
-                        ->withInput();
-          }
+            if ($validator->fails()) {
+                return back()
+                    ->withErrors($validator)
+                    ->withInput();
+            }
 
-        $tahunAjaran = TahunAjaran::findOrFail($id);
+            // Custom validation rules
+            if (TahunAjaran::where('selesai', '>', $request->edit_mulai)->where('mulai', '<=', $request->edit_mulai)->exists()) {
+                return back()->with('error', 'Tanggal mulai tidak boleh dalam range tahun ajaran yang belum selesai.');
+            }
 
-         // Cek apakah status baru adalah aktif
-    if ($request->edit_status == 'aktif') {
-        // Cari tahun ajaran yang saat ini aktif (kecuali yang sedang diupdate)
-        $activeTahunAjaran = TahunAjaran::where('status', 'aktif')
-            ->where('id', '!=', $tahunAjaran->id)
-            ->first();
+            if (TahunAjaran::whereBetween('mulai', [$request->edit_mulai, $request->edit_selesai])->orWhereBetween('selesai', [$request->edit_mulai, $request->edit_selesai])->exists()) {
+                return back()->with('error', 'Tanggal mulai dan selesai tidak boleh bersinggungan dengan tahun ajaran yang sudah ada.');
+            }
 
-        // Jika ada yang aktif, ubah statusnya menjadi tidak aktif
-        if ($activeTahunAjaran) {
-            $activeTahunAjaran->status = 'tidak_aktif';
-            $activeTahunAjaran->save();
+            if ($request->edit_mulai > $request->edit_selesai) {
+                return back()->with('error', 'Tanggal mulai tidak boleh lebih besar dari tanggal selesai.');
+            }
+
+            $tahunAjaran = TahunAjaran::findOrFail($id);
+
+            // Cek apakah status baru adalah aktif
+            if ($request->edit_status == 'aktif') {
+                // Cari tahun ajaran yang saat ini aktif (kecuali yang sedang diupdate)
+                $activeTahunAjaran = TahunAjaran::where('status', 'aktif')
+                    ->where('id', '!=', $tahunAjaran->id)
+                    ->first();
+
+                // Jika ada yang aktif, ubah statusnya menjadi tidak aktif
+                if ($activeTahunAjaran) {
+                    $activeTahunAjaran->status = 'tidak_aktif';
+                    $activeTahunAjaran->save();
+                }
+            }
+
+            $tahunAjaran->tahun_ajaran = $request->edit_tahun_ajaran;
+            $tahunAjaran->status = $request->edit_status;
+            $tahunAjaran->mulai = $request->edit_mulai;
+            $tahunAjaran->selesai = $request->edit_selesai;
+            $tahunAjaran->save();
+
+            return redirect()->route('tahun-ajaran.index')
+                ->with('success', 'Data berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->route('tahun-ajaran.index')
+                ->with('error', 'Terjadi kesalahan saat memperbarui data.');
         }
-    }
-        $tahunAjaran->tahun_ajaran = $request->edit_tahun_ajaran;
-        $tahunAjaran->status = $request->edit_status;
-        $tahunAjaran->save();
-
-        return redirect()->route('tahun-ajaran.index') // Ganti dengan nama route redirect setelah update
-                        ->with('success', 'Data berhasil diperbarui.');
     }
 
     /**

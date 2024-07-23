@@ -28,15 +28,16 @@
                             <div class="col-md-5">
                                 <form action="{{ route('calon-siswa.index') }}" method="GET">
                                     <div class="form-group">
-                                        {{--
-                                        <select name="gelombang_id" id="gelombang_id" class="form-select form-select-lg">
-                                            @foreach ($gelombangList as $gelombang)
-                                                <option value="{{ $gelombang->id }}"
-                                                    {{ $gelombang->id == $gelombangId ? 'selected' : '' }}>
-                                                    {{ $gelombang->tahunAjaran->tahun_ajaran }}/{{ $gelombang->gelombang }}
+
+                                        <select name="tahun_ajaran_id" id="tahun_ajaran_id"
+                                            class="form-select form-select-lg">
+                                            @foreach ($tahunAjaranList as $tahunAjaran)
+                                                <option value="{{ $tahunAjaran->id }}"
+                                                    {{ $tahunAjaranId == $tahunAjaran->id ? 'selected' : '' }}>
+                                                    {{ $tahunAjaran->tahun_ajaran }}
                                                 </option>
                                             @endforeach
-                                        </select> --}}
+                                        </select>
                                     </div>
                             </div>
                             <div class="col-md-5">
@@ -50,6 +51,23 @@
                                 <button type="submit" class="btn btn-primary">Cari</button>
                             </div>
                             </form>
+                            @if (session('success'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('success') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
+
+                            @if (session('error'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('error') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -60,18 +78,18 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Siswa</th>
-                                        <th>Umur</th>
-                                        <th>Nomor Telepon</th>
-                                        <th>Alamat</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (!$siswa->isEmpty())
+                            @if (isset($siswa) && $siswa->count() > 0)
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Siswa</th>
+                                            <th>Umur</th>
+                                            <th>Nomor Telepon</th>
+                                            <th>Alamat</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         @foreach ($siswa as $item)
                                             <tr>
                                                 <td>{{ $item->nama_lengkap }}</td>
@@ -118,37 +136,9 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="5" align="center">
-                                                <div id="lottie-animation" style="width: 200px; height: 200px;"></div>
-                                                <p>Data Tidak Ditemukan</p>
-                                            </td>
-                                        </tr>
-                                    @endif
+                                    </tbody>
 
-
-                                    @if (session('success'))
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            {{ session('success') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
-
-                                    @if (session('error'))
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            {{ session('error') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
-
-                                </tbody>
-
-                            </table>
+                                </table>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -156,6 +146,13 @@
                             {{ $siswa->links('vendor.pagination.custom') }}
                         </div> <!-- Menampilkan tautan pagination -->
                     </div>
+                @else
+                    <div class="d-flex flex-column justify-content-center align-items-center mt-4">
+                        <div class="text-center" id="lottie-animation" style="width: 200px; height: 200px;"></div>
+                        <p>Data Tidak Ditemukan</p>
+                    </div>
+                    @endif
+
                 </div>
             </div>
 

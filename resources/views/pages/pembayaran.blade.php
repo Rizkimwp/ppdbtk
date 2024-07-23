@@ -28,17 +28,18 @@
                         <div class="row">
                             <div class="col-md-5">
                                 <form action="{{ route('pembayaran.index') }}" method="GET">
-                                    {{-- <div class="form-group">
+                                    <div class="form-group">
 
-                                        <select name="gelombang_id" id="gelombang_id" class="form-select form-select-lg">
-                                            @foreach ($gelombangList as $gelombang)
-                                                <option value="{{ $gelombang->id }}"
-                                                    {{ $gelombang->id == $gelombangId ? 'selected' : '' }}>
-                                                    {{ $gelombang->tahunAjaran->tahun_ajaran }}/{{ $gelombang->gelombang }}
+                                        <select name="tahun_ajaran_id" id="tahun_ajaran_id"
+                                            class="form-select form-select-lg">
+                                            @foreach ($tahunAjaranList as $tahunAjaran)
+                                                <option value="{{ $tahunAjaran->id }}"
+                                                    {{ $tahunAjaranId == $tahunAjaran->id ? 'selected' : '' }}>
+                                                    {{ $tahunAjaran->tahun_ajaran }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                    </div> --}}
+                                    </div>
                             </div>
                             <div class="col-md-5">
                                 <div class="form-group">
@@ -67,7 +68,7 @@
                                         <th>Nama Siswa</th>
                                         <th>Nomor Telepon</th>
                                         <th>Status Pembayaran</th>
-                                        <th>Bukti Pembayaran</th>
+
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -82,22 +83,19 @@
                                                         <label class="badge badge-success">LUNAS</label>
                                                     @elseif ($item->status === 'belum_lunas')
                                                         <label class="badge badge-info">BELUM LUNAS</label>
+                                                    @elseif ($item->status === 'pending')
+                                                        <label class="badge badge-warning">MENUNGGU VALIDASI</label>
                                                     @else
                                                         <label class="badge badge-danger">TIDAK VALID</label>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    @if ($item->payment_method === '')
-                                                        <label class="badge badge-warning">TIDAK ADA</label>
-                                                    @else
-                                                        <label
-                                                            class="badge badge-success">{{ $item->payment_methode }}</label>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <button type="button" class="btn btn-success btn-sm"
-                                                        data-bs-toggle="modal" data-bs-target="#viewModal" onclick="">
-                                                        <i class="mdi mdi-eye btn-icon-prepend"></i> View
+                                                    <button type="button" class="btn btn-success btn-sm btn-cek"
+                                                        data-bs-toggle="modal" data-bs-target="#cekModal"
+                                                        data-metode="{{ $item->payment_method }}"
+                                                        data-id="{{ $item->id }}" data-file="{{ $item->file_path }}"
+                                                        data-nama="{{ $item->calonsiswa->nama_lengkap }}">
+                                                        <i class="mdi mdi-eye btn-icon-prepend"></i> CEK PEMBAYARAN
                                                     </button>
                                                 </td>
                                             </tr>
@@ -138,12 +136,9 @@
             </div>
 
         </div>
-
-
-
     </div>
 
-
+    @include('components.modal.cek-pembayaran')
 @endsection
 @section('script')
     <script>

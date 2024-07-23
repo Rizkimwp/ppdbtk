@@ -26,6 +26,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     })->name('dashboard');
     Route::resource('calon-siswa', SiswaController::class);
     Route::get('pembayaran-siswa', [PembayaranController::class, 'pembayaranSiswa'])->name('pembayaranSiswa');
+    Route::put('uploadbukti/{id}', [PembayaranController::class, 'uploadsiswa'])->name('uploadbukti');
+
 });
 
 
@@ -37,7 +39,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::resource('list-berkas', ListBerkasController::class);
     Route::resource('validasi-berkas', BerkasController::class);
     Route::resource('pembayaran', PembayaranController::class);
-
     Route::get('findBerkas', [ListBerkasController::class, 'findById'])->name('listberkas');
     Route::resource('user', UserController::class);
 

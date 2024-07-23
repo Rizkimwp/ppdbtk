@@ -45,6 +45,7 @@
                                 <thead>
                                     <tr>
                                         <th>Tahun Ajaran</th>
+                                        <th>Periode</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -54,6 +55,9 @@
                                         @foreach ($items as $item)
                                             <tr>
                                                 <td>{{ $item->tahun_ajaran }}</td>
+                                                <td>{{ $item->mulai }} <span class="fw-bold"> s/d
+                                                    </span>{{ $item->selesai }}</td>
+
                                                 <td>
                                                     @if ($item->status === 'aktif')
                                                         <label class="badge badge-success">Aktif</label>
@@ -68,6 +72,8 @@
                                                         'id' => $item->id,
                                                         'nama' => $item->tahun_ajaran,
                                                         'status' => $item->status,
+                                                        'selesai' => $item->selesai,
+                                                        'mulai' => $item->mulai,
                                                     ])
                                                         Aksi
                                                     @endcomponent
@@ -134,7 +140,7 @@
             document.querySelectorAll('.alert').forEach(function(alert) {
                 alert.remove();
             });
-        }, 2000);
+        }, 3000);
     </script>
 
 @endsection

@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('pembayaran', function (Blueprint $table) {
             $table->id();
             $table->string('payment_method');
-            $table->decimal('amount', 10, 2);
+            $table->decimal('amount', 10, 2)->nullable();
             $table->timestamp('payment_date')->useCurrent();
             $table->string('transaction_id')->unique();
-            $table->enum('status', ['belum_lunas', 'lunas', 'gagal']);
-            $table->string('file_path');
+            $table->enum('status', ['belum_lunas', 'lunas', 'gagal', 'pending']);
+            $table->string('file_path')->nullable();
             $table->timestamps();
             $table->foreignId('calon_siswa_id');
         });

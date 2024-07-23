@@ -16,18 +16,18 @@ class BerkasController extends Controller
     public function index(Request $request)
 {
     $query = CalonSiswa::query();
-    // $gelombangList = Gelombang::with('tahunAjaran')->get();
+    $tahunAjaranList = TahunAjaran::get();
 
-    // // Cari berdasarkan gelombang
-    // $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
+    // Cari berdasarkan gelombang
+    $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
 
-    // if ($activeTahunAjaran) {
-    //     $gelombangId = $request->input('gelombang_id', Gelombang::where('tahun_ajaran_id', $activeTahunAjaran->id)->value('id'));
-    //     $query->where('gelombang_id', $gelombangId);
-    // } else {
+    if ($activeTahunAjaran) {
+        $tahunAjaranId = $request->input('tahun_ajaran_id', TahunAjaran::where('id', $activeTahunAjaran->id)->value('id'));
+        $query->where('tahun_ajaran_id', $tahunAjaranId);
+    } else {
 
-    //     return response()->view('pages.validasi', compact('gelombangList'))->withErrors('Tidak ada tahun ajaran aktif.');
-    // }
+        return view('pages.validasi', compact('tahunAjaranList'))->withErrors('Tidak ada tahun ajaran aktif.');
+    }
 
     // Cari berdasarkan nama
     if ($request->filled('nama')) {
@@ -36,7 +36,7 @@ class BerkasController extends Controller
 
     $siswa = $query->paginate(5);
 
-    return view('pages.validasi', compact('siswa'));
+    return view('pages.validasi', compact('siswa', 'tahunAjaranList', 'tahunAjaranId'));
 }
 
 
