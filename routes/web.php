@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunController;
 use App\Http\Controllers\BerkasController;
@@ -35,6 +36,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     // Rute khusus user
 
     Route::resource('tahun-ajaran', TahunController::class);
+    Route::resource('kelas', KelasController::class);
+
     // Route::resource('gelombang', GelombangController::class);
     Route::resource('list-berkas', ListBerkasController::class);
     Route::resource('validasi-berkas', BerkasController::class);

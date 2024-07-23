@@ -78,12 +78,6 @@
                                 <i class="mdi mdi-human menu-icon"></i>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('validasi-berkas.index') }}">
-                                <span class="menu-title">Validasi Berkas</span>
-                                <i class="mdi mdi-receipt-text-check menu-icon"></i>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </li>
@@ -94,10 +88,22 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('pembayaran.index') }}">
-                    <span class="menu-title">Pembagian Kelas</span>
-                    <i class="mdi mdi-door menu-icon"></i>
+                <a class="nav-link" data-bs-toggle="collapse" href="#kelas" aria-expanded="false"
+                    aria-controls="kelas">
+                    <span class="menu-title">Master Kelas</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-seat menu-icon"></i>
                 </a>
+                <div class="collapse" id="kelas">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('kelas.index') }}">Ruangan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('kelas.create') }}">Pembagian Kelas</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
         @else
             <li class="nav-item nav-profile">
