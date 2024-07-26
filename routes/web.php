@@ -13,7 +13,7 @@ use App\Http\Controllers\PembayaranController;
 
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
-Route::get('/login-sso', [AuthController::class, 'loginsso'])->name('loginsso');
+// Route::get('/login-sso', [AuthController::class, 'loginsso'])->name('loginsso');
 Route::post('/login', [AuthController::class, 'login'])->name('loginpost');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showregister'])->name('register');

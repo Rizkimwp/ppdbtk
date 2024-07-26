@@ -46,7 +46,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'role' => 'admin'
         ]);
 
@@ -55,8 +55,13 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
         if (Auth::attempt($request->only('username', 'password'))) {
-            return redirect()->route('dashboard'); // Mengarahkan ke rute dashboard
+            return redirect()->route('dashboard'); // Use a named route
         }
 
         return redirect()->back()->with('error', 'Username atau Password Salah');
