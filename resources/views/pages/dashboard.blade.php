@@ -20,68 +20,61 @@
             </nav>
         </div>
         <div class="row">
-            <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-danger card-img-holder text-white">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        <p class="fw-bold">Profil Sekolah</p>
+                    </div>
+                    <img src="assets/images/hero_5.jpeg" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">Calon Siswa <i
-                                class="mdi mdi-chart-line mdi-24px float-end"></i>
-                        </h4>
-                        <h2 class="mb-5">15,0000</h2>
-                        <h6 class="card-text">Increased by 60%</h6>
+                        <p class="card-text">Tk Al-Hikmah didirikan pada tanggal 16 Juli 2013 dan terletak di kecamatan
+                            Jayanti, Kabupaten Tangerang, Provinsi Banten tepatnya di Kp.Jayanti Timur RT/RW.06/03 TK ini
+                            diselenggarakan oleh yayasan TK Al-Hikmah Jayanti Timur dan berada dibawah tanggung jawab ibu
+                            HERYANI,S.Pd.
+                            Sejak awal pendiriannya, TK Al-Hikmah telah berkomitmen untuk menyediakan pendidikan dasar yang
+                            berkualitas bagi anak-anak usia dini. Dengan menggunakan kurikulum 2013 (K13), sekolah ini
+                            bertujuan untuk mengembangkan potensi anak-anak secara holistik, mencakup aspek akademis,
+                            sosial, emosional, dan spiritual.
+                            Fasilitas yang memadai dan tenaga pendidikan yang berkompeten menjadi salah satu keunggulan TK
+                            Al-Hikmah. Sekolah ini tidak hanya fokus pada pencapaian akademis, tetapi juga pada pembentukan
+                            karakter anak-anak melalui berbagai kegiatan ekstrakulikuler dan program pengembangan diri.
+                            Dengan dukungan dari yayasan TK Al-Hikmah Jayanti Timur, sekolah ini terus berupaya meningkatkan
+                            mutu pendidikan dan menjadi lembaga yang unggul dalam membentuk generasi yang cerdas, berakhlak
+                            mulia, dan berwawadan luas.
+
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-info card-img-holder text-white">
-                    <div class="card-body">
-                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">Berkas Tervalidasi<i
-                                class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
-                        </h4>
-                        <h2 class="mb-5">45,6334</h2>
-                        <h6 class="card-text">Decreased by 10%</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 stretch-card grid-margin">
-                <div class="card bg-gradient-success card-img-holder text-white">
-                    <div class="card-body">
-                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                        <h4 class="font-weight-normal mb-3">Siswa Aktif<i class="mdi mdi-diamond mdi-24px float-end"></i>
-                        </h4>
-                        <h2 class="mb-5">95,5741</h2>
-                        <h6 class="card-text">Increased by 5%</h6>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="row">
-            <div class="col-md-7 grid-margin stretch-card">
-                <div class="card">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card" style="width: 18rem;">
+                    <img src="assets/images/hero_1.jpeg" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <div class="clearfix">
-                            <h4 class="card-title float-start">Visit And Sales Statistics</h4>
-                            <div id="visit-sale-chart-legend"
-                                class="rounded-legend legend-horizontal legend-top-right float-end"></div>
-                        </div>
-                        <canvas id="visit-sale-chart" class="mt-4"></canvas>
+                        <p class="card-text">Studi Tour Siswa </p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-5 grid-margin stretch-card">
-                <div class="card">
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card" style="width: 18rem;">
+                    <img src="assets/images/hero_2.jpeg" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <h4 class="card-title">Traffic Sources</h4>
-                        <div class="doughnutjs-wrapper d-flex justify-content-center">
-                            <canvas id="traffic-chart"></canvas>
-                        </div>
-                        <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4">
-                        </div>
+                        <p class="card-text">Agenda Pelatihan Manasik Haji Tahun Pelajaran 2023-2024 .</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 stretch-card grid-margin">
+                <div class="card" style="width: 18rem;">
+                    <img src="assets/images/hero_6.jpeg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <p class="card-text">Pelepasan Siswa / Siswi Angkatan XI </p>
                     </div>
                 </div>
             </div>
         </div>
+
 
 
     </div>

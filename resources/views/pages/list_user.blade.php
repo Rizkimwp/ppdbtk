@@ -21,6 +21,23 @@
 
         <div class="row">
             <div class="col-12 grid-margin">
+
+                <div class="row">
+                    <div class="col-md-12 text-end">
+                        @component('components.create-button', [
+                            'type' => 'button',
+                            'color' => 'success',
+                            'icon' => 'file-check',
+                            'toggle' => 'modal',
+                            'target' => '#createUser',
+                        ])
+                            TAMBAH USER
+                        @endcomponent
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-12 grid-margin">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -98,7 +115,16 @@
                                                         {{ $item->role }}
                                                     </td>
                                                     <td>
-
+                                                        @component('components.dropdown-user', [
+                                                            'editModal' => '#editModal',
+                                                            'deleteModal' => '#deleteModal',
+                                                            'id' => $item->id,
+                                                            'nama' => $item->nama,
+                                                            'username' => $item->username,
+                                                            'hak' => $item->role,
+                                                            'email' => $item->email,
+                                                        ])
+                                                        @endcomponent
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -125,8 +151,10 @@
             </div>
 
         </div>
-
+        @include('components.modal.create-user')
+        @include('components.modal.edit-user')
     @endsection
+
     @section('script')
         <script>
             const animationPath = '{{ asset('assets/animations/search.json') }}';
@@ -146,5 +174,21 @@
             document.getElementById('tahun_ajaran_id').addEventListener('change', function() {
                 document.getElementById('filterForm').submit();
             });
+        </script>
+
+        <script>
+            function togglePassword(fieldId, iconId) {
+                var passwordField = document.getElementById(fieldId);
+                var toggleIcon = document.getElementById(iconId);
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    toggleIcon.classList.remove("mdi-eye");
+                    toggleIcon.classList.add("mdi-eye-off");
+                } else {
+                    passwordField.type = "password";
+                    toggleIcon.classList.remove("mdi-eye-off");
+                    toggleIcon.classList.add("mdi-eye");
+                }
+            }
         </script>
     @endsection
