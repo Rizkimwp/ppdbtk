@@ -9,18 +9,34 @@ use Illuminate\Notifications\Notification;
 
 class ValidasiSelesaiNotification extends Notification
 {
-    use Queueable;
+    public $data;
+
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
 
     public function via($notifiable)
     {
-        return ['database']; // Mengirim notifikasi ke database
+        return ['mail', 'database']; // Saluran notifikasi yang digunakan
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject('Berkas Tidak Valid')
+            ->line('Status berkas Anda adalah tidak valid.')
+            ->action('Lihat Detail', url('/'))
+            ->line('Terima kasih!');
     }
 
     public function toArray($notifiable)
     {
         return [
-            'message' => 'Validasi telah selesai.',
-            'link' => url('/'), // Tautan ke halaman atau rute yang sesuai
+            'nama_berkas' => $this->data['nama_berkas'],
+            'status' => $this->data['status'],
+            'title' => $this->data['title'],
+            'message' => $this->data['message'],
         ];
     }
 }

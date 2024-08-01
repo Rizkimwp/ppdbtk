@@ -20,7 +20,7 @@
                                         class="form-control form-control-lg @error('username')
                                         is-invalid
                                     @enderror"
-                                        value="{{ old('username') }}" id="exampleInputUsername1" name="username"
+                                        value="{{ old('username') }}" id="username" name="username"
                                         placeholder="NIK CALON SISWA">
                                     @error('username')
                                         <span class="invalid-feedback" role="alert">
@@ -33,7 +33,7 @@
                                         class="form-control form-control-lg @error('name')
                                         is-invalid
                                     @enderror"
-                                        value="{{ old('name') }}" id="exampleInputUsername1" name="name"
+                                        value="{{ old('name') }}" id="name" name="name"
                                         placeholder="NAMA LENGKAP">
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -125,6 +125,18 @@
                 toggleIcon.classList.add("mdi-eye");
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var inputs = document.querySelectorAll(
+                'input[id^="username"], input[id^="name"]'
+            );
+
+            inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    this.value = this.value.toUpperCase();
+                });
+            });
+        });
     </script>
 
 @endsection

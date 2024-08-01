@@ -47,7 +47,7 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role' => 'admin'
+            'role' => 'siswa'
         ]);
 
         return redirect()->route('login')->with('success','User berhasil terdaftar, Silahkan Login');

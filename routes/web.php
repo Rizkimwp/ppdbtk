@@ -7,6 +7,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TahunController;
 use App\Http\Controllers\BerkasController;
+use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\GelombangController;
 use App\Http\Controllers\ListBerkasController;
 use App\Http\Controllers\PembayaranController;
@@ -28,21 +29,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('calon-siswa', SiswaController::class);
     Route::get('pembayaran-siswa', [PembayaranController::class, 'pembayaranSiswa'])->name('pembayaranSiswa');
     Route::put('uploadbukti/{id}', [PembayaranController::class, 'uploadsiswa'])->name('uploadbukti');
-
+    Route::get('/notifications', [SiswaController::class, 'getNotifications']);
+    Route::get('/notifications/read/{id}', [SiswaController::class, 'readNotifikasi'])->name('notifications.read');
+    Route::post('/berkas/upload-ulang/{id}', [BerkasController::class, 'uploadUlang'])->name('berkas.upload_ulang');
 });
 
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     // Rute khusus user
-
+    Route::post('change-password/{id}', [UserController::class, 'changePassword'])->name('user.change_password');
     Route::resource('tahun-ajaran', TahunController::class);
     Route::resource('kelas', KelasController::class);
-
+    Route::resource('ruangan', RuanganController::class);
+    Route::get('/generate-ruang-pdf', [RuanganController::class, 'generateRuang'])->name('cetakcalonsiswa');
     // Route::resource('gelombang', GelombangController::class);
     Route::resource('list-berkas', ListBerkasController::class);
-    Route::resource('validasi-berkas', BerkasController::class);
+    Route::put('validasi-berkas/{id}', [BerkasController::class, 'update'])->name('validasi-berkas.update');
+    Route::get('validasi-berkas', [BerkasController::class, 'index'])->name('validasi-berkas.index');
     Route::resource('pembayaran', PembayaranController::class);
     Route::get('findBerkas', [ListBerkasController::class, 'findById'])->name('listberkas');
     Route::resource('user', UserController::class);
+// routes/web.php or routes/api.php
+    Route::get('/siswa-by-kelas/{id}', [RuanganController::class, 'findSiswaByKelas']);
 
 });

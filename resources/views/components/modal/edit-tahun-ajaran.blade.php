@@ -92,7 +92,7 @@
                 document.getElementById('edit_tahun_ajaran').value = nama;
                 document.getElementById('edit_status').value = status;
                 document.getElementById('edit_mulai').value = mulai;
-                document.getElementById('edit_selesai').value = mulai;
+                document.getElementById('edit_selesai').value = selesai;
 
                 // Show the modal
                 $('#editModal').modal('show');

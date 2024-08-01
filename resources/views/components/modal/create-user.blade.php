@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createUserLabel">Buat Tahun Ajaran</h5>
+                <h5 class="modal-title" id="createUserLabel">Buat User</h5>
                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -47,7 +47,7 @@
                             name="role" value="{{ old('role') }}" required>
                             <option value="">Pilih status</option>
                             <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
+
 
                         </select>
                         @error('role')

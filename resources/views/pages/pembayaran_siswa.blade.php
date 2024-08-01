@@ -22,29 +22,17 @@
             <div class="col-lg-3 mb-lg-0 mb-3">
                 <div class="card p-3">
                     <div class="img-box text-center">
-                        <img src="{{ asset('assets/images/BCA-512.webp') }}" alt="" class="img-fluid w-11"
+                        <img src="{{ asset('assets/images/dana.png') }}" alt="" class="img-fluid w-11 mb-4"
                             width="150" height="80">
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between">
-                        <label class="fw-bold" for="">45512332</label>
-                        <small><span class="fw-bold">An. Susilawati</span> </small>
+                        <label class="fw-bold" for="">0878-7497-9361</label>
+                        <small><span class="fw-bold">An. Heryani</span> </small>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 mb-lg-0 mb-3">
-                <div class="card p-3">
-                    <div class="img-box text-center">
-                        <img src="{{ asset('assets/images/BCA-512.webp') }}" alt="" class="img-fluid w-11"
-                            width="150" height="80">
-                    </div>
 
-                    <div class="d-flex align-items-center justify-content-between">
-                        <label class="fw-bold" for="">45512332</label>
-                        <small><span class="fw-bold">An. Susilawati</span> </small>
-                    </div>
-                </div>
-            </div>
 
 
 
@@ -62,7 +50,7 @@
                         </p>
                         <div class="collapse show p-3 pt-0" id="collapseExample">
                             <div class="row">
-                                @if ($pembayaran)
+                                @if (isset($pembayaran))
                                     <div class="col-lg-5 mb-lg-0 mb-3">
                                         <table class="table">
                                             <tbody>
@@ -72,7 +60,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">JUMLAH</td>
-                                                    <td class="c-green">Rp{{ $pembayaran->amount }}</td>
+                                                    <td class="c-green">Rp65.000</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fw-bold">STATUS</td>
@@ -97,8 +85,8 @@
                                     </div>
                                 @endif
 
-                                <div class=" @if (!$pembayaran) col-lg-12 @else col-lg-7 @endif">
-                                    @if ($pembayaran)
+                                <div class=" @if (isset($pembayaran)) col-lg-7 @else col-lg-12 @endif">
+                                    @if (isset($pembayaran))
                                         <form action="{{ route('uploadbukti', $pembayaran->id) }}" class="form"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
@@ -115,7 +103,11 @@
                                                     @enderror
                                                 </div>
                                                 <div class="col-12 mt-3">
-                                                    <button class="btn btn-primary w-100">Upload Bukti Transaksi</button>
+                                                    <button class="btn btn-primary w-100"
+                                                        @if ($pembayaran->status === 'lunas') disabled @endif>
+                                                        Upload Bukti Transaksi
+                                                    </button>
+
                                                 </div>
                                             </div>
                                         </form>

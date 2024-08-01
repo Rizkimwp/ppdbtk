@@ -18,7 +18,9 @@
                 </ul>
             </nav>
         </div>
-        @if ($siswa)
+        @if ($berkasTidakValid->isNotEmpty())
+            @include('components.berkas-upload')
+        @elseif($siswa)
             @include('components.biodata')
         @else
             <div class="row">
@@ -36,6 +38,20 @@
                                     {{ Session::get('error') }}
                                 </div>
                             @endif
+                            @php
+                                // Default values
+                                $defaultNik = old('nik');
+                                $defaultName = old('nama_lengkap');
+                                $defaultEmail = old('email');
+
+                                // Check if user is authenticated and has the 'siswa' role
+                                if (Auth::check() && Auth::user()->role === 'siswa') {
+                                    $user = Auth::user();
+                                    $defaultNik = $user->username;
+                                    $defaultName = $user->name;
+                                    $defaultEmail = $user->email;
+                                }
+                            @endphp
 
                         </div>
                         <div class="card-body">
@@ -49,7 +65,7 @@
                                             <label class="col-sm-3 col-form-label">NIK</label>
                                             <div class="col-sm-9">
                                                 <input type="text" id="nik" name="nik"
-                                                    value="{{ old('nik') }}"
+                                                    value="{{ $defaultNik }}"
                                                     class="form-control @error('nik') is-invalid @enderror" />
                                             </div>
                                             @error('nik')
@@ -64,7 +80,7 @@
                                             <label class="col-sm-3 col-form-label">Nama Lengkap</label>
                                             <div class="col-sm-9">
                                                 <input type="text" id="nama_lengkap" name="nama_lengkap"
-                                                    value="{{ old('nama_lengkap') }}"
+                                                    value="{{ $defaultName }}"
                                                     class="form-control  @error('nama_lengkap') is-invalid @enderror" />
                                             </div>
                                             @error('nama_lengkap')
@@ -534,7 +550,7 @@
                                             <div class="col-sm-9">
                                                 <input type="text"
                                                     class="form-control @error('email') is-invalid @enderror"
-                                                    id="" name="email" value="{{ old('email') }}" />
+                                                    id="" name="email" value="{{ $defaultEmail }}" />
                                             </div>
                                             @error('email')
                                                 <span class="invalid-feedback" role="alert">

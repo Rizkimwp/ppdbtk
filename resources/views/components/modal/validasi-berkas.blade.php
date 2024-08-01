@@ -40,7 +40,6 @@
             const container = document.getElementById('berkas-container');
             container.innerHTML = ''; // Kosongkan container sebelum memapping data baru
 
-            // Cek jika data adalah string JSON, lalu parse menjadi objek JavaScript
             let berkasArray = [];
             try {
                 berkasArray = JSON.parse(data);
@@ -66,7 +65,6 @@
                 button.className = 'btn btn-info';
                 button.textContent = 'Lihat Berkas';
                 button.onclick = function() {
-                    // Mengarahkan browser ke link berkas saat tombol ditekan
                     window.open(berkas.file_path, '_blank');
                 };
 
@@ -76,11 +74,11 @@
                 const select = document.createElement('select');
                 select.className = 'form-select';
                 select.innerHTML = `
-                        <option value="VALID">Valid</option>
-                        <option value="TIDAK_VALID">Tidak Valid</option>
-                        <option value="PERIKSA">Periksa</option>
-                    `;
-                select.value = berkas.status; // Set nilai default sesuai status berkas
+                    <option value="VALID">Valid</option>
+                    <option value="TIDAK_VALID">Tidak Valid</option>
+                    <option value="PERIKSA">Periksa</option>
+                `;
+                select.value = berkas.status;
                 select.onchange = function() {
                     const status = this.value;
                     axios.put(`/validasi-berkas/${berkas.id}`, {
@@ -89,11 +87,8 @@
                         .then(response => {
                             showAlert(`Status berkas ${namaBerkas} diperbarui menjadi ${status}`,
                                 'success');
-                        })
-                        .catch(error => {
-                            showAlert(`Gagal memperbarui status berkas ${berkas.id}: ${error.message}`,
-                                'danger');
                         });
+
                 };
 
                 tdAksi.appendChild(select);
@@ -104,9 +99,9 @@
             });
         }
 
-        // Panggil function dengan data berkas
         displayBerkas(berkas);
     }
+
 
     // Mengambil data berkas dari server
     axios.get('/findBerkas')

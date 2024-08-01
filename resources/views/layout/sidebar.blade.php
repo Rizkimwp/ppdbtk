@@ -82,6 +82,12 @@
                 </div>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('validasi-berkas.index') }}">
+                    <span class="menu-title">Validasi Berkas</span>
+                    <i class="mdi mdi-file-check menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('pembayaran.index') }}">
                     <span class="menu-title">Pembayaran</span>
                     <i class="mdi mdi-contactless-payment menu-icon"></i>
@@ -100,7 +106,7 @@
                             <a class="nav-link" href="{{ route('kelas.index') }}">Ruangan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('kelas.create') }}">Pembagian Kelas</a>
+                            <a class="nav-link" href="{{ route('ruangan.index') }}">Pembagian Kelas</a>
                         </li>
                     </ul>
                 </div>

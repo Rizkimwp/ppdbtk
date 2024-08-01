@@ -4,17 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $user = User::paginate(5);
-        return view('pages.list_user',compact('user'));
+        // Ambil parameter pencarian dari request
+        $nama = $request->input('nama');
+
+        // Query pengguna
+        $query = User::query();
+
+        if ($nama) {
+            // Filter berdasarkan nama (menggunakan LIKE untuk pencarian parsial)
+            $query->where('name', 'like', '%' . $nama . '%');
+        }
+
+        // Paginasi hasil query
+        $user = $query->paginate(5);
+
+        return view('pages.list_user', compact('user'));
     }
 
     /**
@@ -103,5 +116,32 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function changePassword(Request $request, $id)
+    {
+        // Validasi input dari form
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:4|confirmed',
+        ]);
+
+        $user = User::find($id);
+
+         // Jika user tidak ditemukan
+    if (!$user) {
+        return redirect()->route('user.index')->with('error', 'Pengguna tidak ditemukan.');
+    }
+
+    // Cek apakah password lama sesuai
+    if (!Hash::check($request->current_password, $user->password)) {
+        return redirect()->back()->with('error' , 'Password Lama Tidak Sesuai');
+    }
+
+    // Update password baru
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    return redirect()->route('user.index')->with('success', 'Password berhasil diubah');
     }
 }

@@ -14,6 +14,19 @@
                     </div>
                 @endif
 
+                @if ($siswa->berkas->contains('status', 'PERIKSA'))
+                    <div class="alert alert-warning text-center">
+                        <i class="mdi mdi-alert-outline"></i> Berkas Persyaratan Sedang Diperiksa oleh Admin, Periksa
+                        Notifikasi Secara Berkala.
+                    </div>
+                @else
+                    <div class="alert alert-success text-center">
+                        <i class="mdi mdi-check-outline"></i> Berkas Persyaratan Sudah Valid, Silahkan Bayar Pendaftaran
+                        <a href="{{ route('pembayaranSiswa') }}" class="btn btn-primary"> Disini</a>
+                    </div>
+                @endif
+
+
             </div>
             <div class="card-body">
                 <form class="form-sample" action="{{ route('calon-siswa.store') }}" method="POST"
@@ -126,7 +139,7 @@
                                 <label class="col-sm-3 col-form-label">Agama</label>
                                 <div class="col-sm-9">
                                     <input disabled type="text" class="form-control "
-                                        value="{{ $siswa->agama->nama }}" />
+                                        value="{{ $siswa->agama->nama_agama }}" />
                                 </div>
 
                             </div>

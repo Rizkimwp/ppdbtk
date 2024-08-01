@@ -33,8 +33,8 @@
                     </div>
                 </a>
                 <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
-                    <a class="dropdown-item" href="#">
-                        <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>
+                    {{-- <a class="dropdown-item" href="#">
+                        <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a> --}}
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -96,56 +96,64 @@
                     <h6 class="p-3 mb-0 text-center">4 new messages</h6>
                 </div>
             </li> --}}
+
+            <!-- Notification Dropdown -->
             <li class="nav-item dropdown">
                 <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#"
                     data-bs-toggle="dropdown">
                     <i class="mdi mdi-bell-outline"></i>
-                    <span class="count-symbol bg-danger"></span>
+                    <span class="rounded-circle bg-danger fw-bold"
+                        style="
+        position: absolute;
+        top: 15px; /* Adjust position */
+        right: -15px; /* Adjust position */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px; /* Adjust size as needed */
+        height: 20px; /* Adjust size as needed */
+        border-radius: 50%;
+        background-color: #dc3545; /* Danger color */
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        font-weight: bold;
+        font-size: 14px; /* Adjust size as needed */
+        line-height: 1; /* Adjusts alignment of text inside circle */
+        "
+                        id="notificationCount">{{ $unreadNotificationsCount }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
-                    aria-labelledby="notificationDropdown">
+                    aria-labelledby="notificationDropdown" id="notificationDropdownMenu">
                     <h6 class="p-3 mb-0">Notifications</h6>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-success">
-                                <i class="mdi mdi-calendar"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 class="preview-subject font-weight-normal mb-1">Event today</h6>
-                            <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today
-                            </p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-warning">
-                                <i class="mdi mdi-cog"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 class="preview-subject font-weight-normal mb-1">Settings</h6>
-                            <p class="text-gray ellipsis mb-0"> Update dashboard </p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item preview-item">
-                        <div class="preview-thumbnail">
-                            <div class="preview-icon bg-info">
-                                <i class="mdi mdi-link-variant"></i>
-                            </div>
-                        </div>
-                        <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6 class="preview-subject font-weight-normal mb-1">Launch Admin</h6>
-                            <p class="text-gray ellipsis mb-0"> New admin wow! </p>
-                        </div>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="p-3 mb-0 text-center">See all notifications</h6>
+                    @if ($notifications->isNotEmpty())
+                        @foreach ($notifications as $notification)
+                            <a class="dropdown-item preview-item "
+                                href="{{ route('notifications.read', ['id' => $notification->id]) }}">
+                                <div class="preview-thumbnail">
+                                    <div
+                                        class="preview-icon {{ $notification->data['status'] === 'valid' ? 'bg-success' : 'bg-danger' }}">
+                                        <i class="mdi mdi-bell"></i> <!-- Replace with appropriate icon -->
+                                    </div>
+                                </div>
+                                <div
+                                    class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                                    <h6 class="preview-subject font-weight-normal mb-1">
+                                        {{ $notification->data['title'] }} - {{ $notification->data['nama_berkas'] }}
+                                    </h6>
+                                    <p class="text-gray ellipsis mb-0">{{ $notification->data['message'] }}</p>
+                                </div>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                        @endforeach
+                        <h6 class="p-3 mb-0 text-center">See all notifications</h6>
+                    @else
+                        <p class="text-center p-3">No new notifications</p>
+                    @endif
                 </div>
             </li>
+
+
 
         </ul>
         <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"

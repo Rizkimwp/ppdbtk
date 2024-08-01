@@ -64,7 +64,7 @@
                                     <div class="font-weight-light"> Belum punya akun? <a href="{{ route('register') }}"
                                             class="text-primary">Daftar Disini</a>
                                     </div>
-                                    <a href="#" class="auth-link text-primary">Lupa Password?</a>
+
                                 </div>
                                 {{-- <div class="mt-5 d-grid gap-1 ">
                                     <a class="btn btn-block btn-gradient-dark btn-lg font-weight-medium auth-form-btn"

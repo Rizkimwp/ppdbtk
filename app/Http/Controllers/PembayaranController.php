@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Gelombang;
 use App\Models\Pembayaran;
+use App\Models\BerkasSiswa;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ValidasiSelesaiNotification;
 
 class PembayaranController extends Controller
 {
@@ -16,9 +20,32 @@ class PembayaranController extends Controller
      */
     public function pembayaranSiswa() {
         $currentUser = Auth::user();
-        $pembayaran = Pembayaran::where('calon_siswa_id', $currentUser->calonsiswa->id)->first();
+
+        // Cek apakah calonsiswa ada
+        if (!$currentUser || !$currentUser->calonsiswa) {
+            return view('pages.pembayaran_siswa')->with('error', 'Data calon siswa tidak ditemukan.');
+        }
+
+        // Ambil ID calon siswa
+        $calonSiswaId = $currentUser->calonsiswa->id;
+
+        // Cek apakah semua berkas calon siswa valid
+        $allBerkasValid = BerkasSiswa::where('calon_siswa_id', $calonSiswaId)
+            ->where('status', 'VALID')
+            ->count() === BerkasSiswa::where('calon_siswa_id', $calonSiswaId)->count();
+
+        if (!$allBerkasValid) {
+            return view('pages.pembayaran_siswa')->with('error', 'Berkas calon siswa belum lengkap atau tidak valid.');
+        }
+
+        // Ambil data pembayaran untuk calon siswa
+        $pembayaran = Pembayaran::where('calon_siswa_id', $calonSiswaId)->first();
+
+        // Tampilkan view
         return view('pages.pembayaran_siswa', compact('pembayaran'));
     }
+
+
 
     public function index(Request $request)
     {
@@ -90,19 +117,47 @@ class PembayaranController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id){
-        try {
-            $validatedData = $request->validate([
-                'status' => 'required', // Adjust validation as needed
-            ]);
+    public function update(Request $request, $id)
+{
+    try {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'status' => 'required', // Adjust validation as needed
+        ]);
 
-            $pembayaran = Pembayaran::findOrFail($id);
-            $pembayaran->update($validatedData);
-            return redirect()->back()->with('success', 'Pembayaran Berhasil Di Perbarui');
-        } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'Gagal Memperbarui Pembayaran: ' . $e->getMessage());
+        // Find the Pembayaran record by ID
+        $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran->update($validatedData);
+
+        // Assume you want to notify the user associated with this payment
+        $user = User::find($pembayaran->calonsiswa->user_id); // Adjust based on your relationship
+
+
+        if ($user) {
+            // Determine the notification title based on the payment status
+            $title = $pembayaran->status === 'lunas' ? 'Bukti Pembayaran Valid' : ($pembayaran->status === 'gagal' ? 'Bukti Pembayaran Tidak Valid' : 'Pembayaran Diperbarui');
+
+            // Prepare notification data
+            $data = [
+                'nama_berkas' => 'Pendaftaran', // Adjust as needed
+                'status' => $pembayaran->status,
+                'title' => $title,
+                'message' => 'Status Pembayaran telah diperbarui.',
+            ];
+
+            // Send notification
+            Notification::send($user, new ValidasiSelesaiNotification($data));
         }
+
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Pembayaran Berhasil Di Perbarui');
+    } catch (\Throwable $e) {
+        // Redirect back with error message in case of exception
+        return redirect()->back()->with('error', 'Gagal Memperbarui Pembayaran: ' . $e->getMessage());
     }
+}
+
 
     public function uploadsiswa(Request $request, $id)
     {

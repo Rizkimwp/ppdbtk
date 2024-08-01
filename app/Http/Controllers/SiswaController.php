@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Agama;
 use Ramsey\Uuid\Uuid;
@@ -14,6 +15,7 @@ use App\Models\Pendidikan;
 use App\Models\BerkasSiswa;
 use App\Models\Penghasilan;
 use App\Models\TahunAjaran;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -56,21 +58,34 @@ class SiswaController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $currentUser = Auth::user();
-        $siswa = null;
+{
+    $currentUser = Auth::user();
+    $siswa = null;
 
-        if ($currentUser->calonSiswa) {
-            $siswa = CalonSiswa::where('id', $currentUser->calonSiswa->id)->first();
-        }
-
-        $listBerkas = ListBerkas::where('aktif', 1)->get();
-        $agama = Agama::all();
-        $pendidikan = Pendidikan::all();
-        $pekerjaan = Pekerjaan::all();
-        $penghasilan = Penghasilan::all();
-    return view('pages.pendaftaran', compact('listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan', 'siswa'));
+    if ($currentUser && $currentUser->calonSiswa) {
+        $siswa = CalonSiswa::where('id', $currentUser->calonSiswa->id)->first();
     }
+
+    // Periksa jika calonSiswa ada sebelum mengakses id-nya
+    if ($currentUser && $currentUser->calonSiswa) {
+        $berkasTidakValid = BerkasSiswa::where('status', 'TIDAK_VALID')
+            ->where('calon_siswa_id', $currentUser->calonSiswa->id)
+            ->get();
+    } else {
+        $berkasTidakValid = collect(); // Mengembalikan koleksi kosong jika calonSiswa tidak ada
+    }
+
+    // Data lainnya
+    $listBerkas = ListBerkas::where('aktif', 1)->get();
+    $agama = Agama::all();
+    $pendidikan = Pendidikan::all();
+    $pekerjaan = Pekerjaan::all();
+    $penghasilan = Penghasilan::all();
+
+    // Kembalikan tampilan dengan data
+    return view('pages.pendaftaran', compact('listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan', 'siswa', 'berkasTidakValid'));
+}
+
 
     /**
      * Store a newly created resource in storage.
@@ -88,7 +103,7 @@ class SiswaController extends Controller
             'jenis_kelamin' => 'required|string',
             'alamat' => 'required|string|max:255',
             'telepon' => 'required|string|max:15',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'required|email|max:255',
             'tinggi_badan' => 'required|string',
             'berat_badan' => 'required|string',
             'anak_ke' => 'required|string|min:1',
@@ -108,12 +123,14 @@ class SiswaController extends Controller
         ]);
 
         try {
-            $tahun = TahunAjaran::where('status', 'aktif')->first();
+            $tahun = TahunAjaran::where('status', 'aktif')
+            ->whereDate('mulai', '<=', Carbon::now())
+            ->whereDate('selesai', '>=', Carbon::now())
+            ->first();
 
-            if (!$tahun) {
-                return back()->with('error', 'Tidak ada tahun ajaran tersedia');
-            }
-
+        if (!$tahun) {
+            return back()->with('error', 'Tidak ada tahun ajaran tersedia untuk tanggal sekarang.');
+        }
             // Ambil tahun ajaran dan gelombang
             $tahunAjaranId = $tahun->id; // Ambil nama tahun ajaran pertama
             $noPendaftaran = CalonSiswa::generateNoPendaftaran();
@@ -230,4 +247,29 @@ protected function handleBerkasUpload(Request $request, CalonSiswa $calonSiswa)
     {
         //
     }
+
+
+
+public function readNotifikasi(string $id)
+{
+    try {
+        // Temukan notifikasi berdasarkan ID-nya
+        $notification = Notification::findOrFail($id);
+
+        // Tandai notifikasi sebagai sudah dibaca dengan memperbarui timestamp read_at
+        $notification->read_at = now();
+        $notification->save();
+
+        // Redirect ke rute calon-siswa.create dengan pesan sukses
+        return redirect()->route('calon-siswa.create')->with('success', 'Notifikasi sudah dibaca');
+    } catch (Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // Redirect kembali dengan pesan error jika notifikasi tidak ditemukan
+        return redirect()->route('calon-siswa.create')->with('error', 'Notification not found.')->withErrors(['error' => $e->getMessage()]);
+    } catch (\Exception $e) {
+        // Redirect kembali dengan pesan error jika terjadi kesalahan
+        return redirect()->route('calon-siswa.create')->with('error', 'An error occurred while marking the notification as read.')->withErrors(['error' => $e->getMessage()]);
+    }
+}
+
+
 }
