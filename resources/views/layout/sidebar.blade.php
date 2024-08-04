@@ -8,11 +8,11 @@
         @if ($userRole === 'admin')
             <li class="nav-item nav-profile">
                 <a href="#" class="nav-link">
-                    <div class="nav-profile-image">
+                    {{-- <div class="nav-profile-image">
                         <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile" />
                         <span class="login-status online"></span>
                         <!--change to offline or busy as needed-->
-                    </div>
+                    </div> --}}
                     <div class="nav-profile-text d-flex flex-column">
                         <!-- Display the logged-in user's name -->
                         <span class="font-weight-bold mb-2">{{ $username }}</span>
