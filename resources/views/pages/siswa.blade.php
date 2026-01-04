@@ -7,7 +7,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <span class="page-title-icon bg-gradient-primary me-2 text-white">
                     <i class="mdi mdi-human"></i>
                 </span> Calon Siswa
             </h3>
@@ -28,16 +28,23 @@
                             <div class="col-md-5">
                                 <form action="{{ route('calon-siswa.index') }}" method="GET">
                                     <div class="form-group">
+                                        <select name="tahun_ajaran_id"
+                                        id="tahun_ajaran_id"
+                                        class="form-select form-select-lg"
+                                        required>
+                                    <option value="" disabled {{ empty($tahunAjaranId) ? 'selected' : '' }}>
+                                        -- Pilih Tahun Ajaran --
+                                    </option>
 
-                                        <select name="tahun_ajaran_id" id="tahun_ajaran_id"
-                                            class="form-select form-select-lg">
-                                            @foreach ($tahunAjaranList as $tahunAjaran)
-                                                <option value="{{ $tahunAjaran->id }}"
-                                                    {{ $tahunAjaranId == $tahunAjaran->id ? 'selected' : '' }}>
-                                                    {{ $tahunAjaran->tahun_ajaran }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    @foreach ($tahunAjaranList as $tahunAjaran)
+                                        <option value="{{ $tahunAjaran->id }}"
+                                            {{ (string)$tahunAjaranId === (string)$tahunAjaran->id ? 'selected' : '' }}>
+                                            {{ $tahunAjaran->tahun_ajaran }}
+                                        </option>
+                                    @endforeach
+                                </select>
+
+
                                     </div>
                             </div>
                             <div class="col-md-5">
@@ -79,7 +86,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if (isset($siswa) && $siswa->count() > 0)
-                                <table class="table table-hover">
+                                <table class="table-hover table">
                                     <thead>
                                         <tr>
                                             <th>Nama Siswa</th>

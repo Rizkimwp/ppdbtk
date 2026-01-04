@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PernyataanController;
+use App\Models\Gelombang;
+use App\Models\TahunAjaran;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -13,7 +17,10 @@ use App\Http\Controllers\ListBerkasController;
 use App\Http\Controllers\PembayaranController;
 
 Route::get('/', function() {
-    return view('landing-page');
+    $tahunAjaran = TahunAjaran::current();
+    $gelombang = Gelombang::current();
+    $hasOpen = $tahunAjaran && $gelombang;
+    return view('landing-page', compact('tahunAjaran', 'gelombang', 'hasOpen'));
 });
 
 Route::get('/login', [AuthController::class, 'index'])->name('login');
@@ -27,12 +34,10 @@ Route::post('/register', [AuthController::class, 'registerSiswa'])->name('regist
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // Rute khusus user
-    Route::get('/dashboard', function () {
-        return view('pages.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'siswa'])->name('dashboard');
     Route::resource('calon-siswa', SiswaController::class);
     Route::get('pembayaran-siswa', [PembayaranController::class, 'pembayaranSiswa'])->name('pembayaranSiswa');
-    Route::put('uploadbukti/{id}', [PembayaranController::class, 'uploadsiswa'])->name('uploadbukti');
+    Route::post('uploadbukti', [PembayaranController::class, 'uploadsiswa'])->name('uploadbukti');
     Route::get('/notifications', [SiswaController::class, 'getNotifications']);
     Route::get('/notifications/read/{id}', [SiswaController::class, 'readNotifikasi'])->name('notifications.read');
     Route::post('/berkas/upload-ulang/{id}', [BerkasController::class, 'uploadUlang'])->name('berkas.upload_ulang');
@@ -41,8 +46,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     // Rute khusus user
+    Route::prefix('pernyataan')->group(function () {
+        Route::get('/', [PernyataanController::class, 'index'])->name('pernyataan.index');
+        Route::post('/', [PernyataanController::class, 'store'])->name('pernyataan.store');
+        Route::put('/{pernyataan}', [PernyataanController::class, 'update'])->name('pernyataan.update');
+        Route::delete('/{pernyataan}', [PernyataanController::class, 'destroy'])->name('pernyataan.destroy');
+    });
+
+    Route::get('/dashboard-admin', [DashboardController::class, 'admin'])->name('dashboard-admin');
     Route::post('change-password/{id}', [UserController::class, 'changePassword'])->name('user.change_password');
     Route::resource('tahun-ajaran', TahunController::class);
+    Route::resource('gelombang', GelombangController::class);
     Route::resource('kelas', KelasController::class);
     Route::resource('ruangan', RuanganController::class);
     Route::get('/generate-ruang-pdf', [RuanganController::class, 'generateRuang'])->name('cetakcalonsiswa');

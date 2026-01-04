@@ -31,8 +31,10 @@
                 const nama = this.getAttribute('data-nama');
 
                 // Set form action
+                let urlTemplate = "{{ route('kelas.update', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('deleteForm');
-                form.action = `/kelas/${id}`;
+                form.action = url;
 
                 // Fill form inputs
                 document.getElementById('nama').textContent = nama;

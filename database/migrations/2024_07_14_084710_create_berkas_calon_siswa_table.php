@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('berkas_calon_siswa', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('calon_siswa_id')->constrained('calon_siswa_pendaftaran');
-            $table->foreignId('list_berkas_id');
+            $table->foreignUuid('calon_siswa_id')->constrained('calon_siswa');
+            $table->foreignUuid('list_berkas_id');
             $table->string('file_path');
             $table->enum('status', ['PERIKSA', 'VALID', 'TIDAK_VALID'])->default('PERIKSA');
             $table->timestamps();

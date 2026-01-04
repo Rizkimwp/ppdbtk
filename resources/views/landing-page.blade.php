@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>PPDB TK ALHIKMAH</title>
+    <title>PPDB SMPIT QUR'AN Daar El-Muflihin</title>
     <meta name="description" content="">
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" />
     <link href="{{ asset('assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
 
     <!-- Fonts -->
@@ -28,873 +28,529 @@
 
     <!-- Main CSS File -->
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
+
+    <style>
+        /* Wrapper untuk menampung gambar dan ornamen */
+        .img-hero-wrapper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            /* Ruang untuk ornamen keluar jalur */
+        }
+
+        /* Gambar Utama (Kyai) */
+        .main-hero-img {
+            position: relative;
+            z-index: 10;
+            /* Pastikan gambar ada di paling depan */
+            /* Memberikan efek bayangan agar gambar terlihat 'muncul' */
+            filter: drop-shadow(0px 15px 30px rgba(13, 110, 253, 0.3));
+            max-height: 550px;
+            /* Menjaga agar tidak terlalu besar di layar lebar */
+            width: auto;
+        }
+
+        /* Instrumen 1: Bentuk Abstrak Biru Besar di belakang */
+        .instrument-blob-1 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            /* Membuat bentuk organik yang tidak beraturan */
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            background: linear-gradient(45deg, #cfe2ff, #e0cfff);
+            opacity: 0.6;
+            z-index: 5;
+            animation: morphing 15s ease-in-out infinite;
+            /* Animasi bergerak halus */
+        }
+
+        /* Instrumen 2: Lingkaran Cahaya Kuning/Emas (Kesan Islami/Suci) */
+        .instrument-glow {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255, 223, 126, 0.6) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 6;
+        }
+
+        /* Instrumen 3: Pola Titik-titik Modern */
+        .instrument-dots {
+            position: absolute;
+            bottom: -20px;
+            left: -20px;
+            width: 100px;
+            height: 100px;
+            background-image: radial-gradient(rgba(13, 110, 253, 0.4) 2px, transparent 2px);
+            background-size: 15px 15px;
+            z-index: 4;
+        }
+
+        /* 1. Wrapper baru untuk membuat bentuk lingkaran */
+        .image-circle-frame {
+            position: relative;
+            z-index: 10;
+            /* Pastikan berada di atas instrumen background */
+            width: 450px;
+            /* Tentukan ukuran lebar lingkaran */
+            height: 450px;
+            /* Tinggi harus sama dengan lebar agar jadi bulat sempurna */
+            border-radius: 50%;
+            /* Kunci untuk membuat bentuk bulat */
+            overflow: hidden;
+            /* Memotong bagian gambar yang keluar dari lingkaran */
+
+            /* Desain Bingkai */
+            border: 8px solid #ffffff;
+            /* Warna dan ketebalan bingkai putih */
+            box-shadow: 0 15px 35px rgba(13, 110, 253, 0.2);
+            /* Bayangan lembut di luar bingkai */
+
+            /* Agar posisi di tengah */
+            margin: auto;
+        }
+
+        /* 2. Update style untuk gambar di dalamnya */
+        .main-hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* PENTING: Agar gambar mengisi lingkaran tanpa gepeng/terdistorsi */
+
+            /* HAPUS atau KOMENTARI filter drop-shadow yang lama karena kita sudah pakai box-shadow di frame */
+            /* filter: drop-shadow(0px 15px 30px rgba(13, 110, 253, 0.3)); */
+        }
+
+        /* 3. Responsif untuk layar HP (agar lingkaran tidak kegedean) */
+        @media (max-width: 768px) {
+            .image-circle-frame {
+                width: 320px;
+                height: 320px;
+                border-width: 5px;
+                /* Bingkai sedikit lebih tipis di HP */
+            }
+        }
+
+        /* Animasi agar bentuk belakang bergerak lambat */
+        @keyframes morphing {
+            0% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+
+            50% {
+                border-radius: 60% 40% 30% 70% / 60% 50% 40% 50%;
+            }
+
+            100% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            }
+        }
+
+        /* Responsif di HP */
+        @media (max-width: 768px) {
+            .img-hero-wrapper {
+                padding: 10px;
+            }
+
+            .instrument-blob-1 {
+                width: 100%;
+                height: 100%;
+            }
+
+            .main-hero-img {
+                max-height: 400px;
+            }
+        }
+    </style>
 </head>
 
 <body class="index-page">
-
-    <header id="header" class="header d-flex align-items-center sticky-top">
-        <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
+    <header id="header" class="header d-flex align-items-center sticky-top bg-white shadow-sm">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
             <a href="index.html" class="logo d-flex align-items-center me-auto">
-                <!-- Uncomment the line below if you also wish to use an image logo -->
-                {{-- <img src="assets/images/logo.ico" alt=""> --}}
-                <h1 class="sitename">TK AL HIKMAH</h1>
-            </a>
+                <img src="assets/images/logo.png" alt="Logo Daar El-Muflihin" class="me-2"
+                    style="max-height: 50px; width: auto;">
 
+                <h1 class="sitename fw-bold text-success mb-0" style="font-size: 1.5rem; letter-spacing: 0.5px;">
+                    SMPIT QUR'AN Daar El-Muflihin
+                </h1>
+            </a>
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="#hero" class="active">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#hero" class="active">Beranda</a></li>
+                    <li><a href="#visi-misi">Visi & Misi</a></li>
+                    <li><a href="#program">Program</a></li>
+                    <li><a href="#kegiatan">Kegiatan</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
-
-            <a class="btn-getstarted" href="index.html#about">LOGIN</a>
-
+            <a class="ms-4 btn-login rounded-pill px-4 py-2 shadow-sm" href="{{ route('login') }}">Pendaftaran</a>
         </div>
     </header>
 
     <main class="main">
 
-        <!-- Hero Section -->
-        <section id="hero" class="hero section">
 
-            <div class="container">
-                <div class="row gy-4">
-                    <div class="col-lg-6 order-lg-last hero-img" data-aos="zoom-out" data-aos-delay="100">
-                        <img src="assets/img/hero-img.png" class="img-fluid animated" alt="">
+        <section id="hero" class="hero section position-relative overflow-hidden py-5"
+            style="background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);">
+
+            <div
+                style="position: absolute; top:0; left:0; width:100%; height:100%; opacity: 0.05; background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M30 0l15 30-15 30L0 30z\' fill=\'%230d6efd\' fill-rule=\'evenodd\'/%3E%3C/svg%3E'); z-index: 0;">
+            </div>
+
+            <div class="position-relative z-2 container">
+                <div class="row gy-5 align-items-center">
+                    <div class="col-lg-6 order-lg-last" data-aos="zoom-out">
+                        <div class="img-hero-wrapper animated">
+                            <div class="instrument-blob-1"></div>
+                            <div class="instrument-glow"></div>
+                            <div class="instrument-dots"></div>
+
+                            <div class="image-circle-frame">
+                                <img src="{{ 'assets/images/jumbotron.jpg' }}" class="img-fluid main-hero-img"
+                                    alt="Sosok Kyai Panutan">
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-lg-6  d-flex flex-column justify-content-center text-center text-md-start"
-                        data-aos="fade-in">
-                        <h2>PENERIMAAN PESERTA DIDIK BARU</h2>
-                        <p>TAHUN AJARAN 2024-2025</p>
-                        <div class="d-flex mt-4 justify-content-center justify-content-md-start">
-                            <a href="#" class="download-btn"><span>
-                                    DAFTAR SEKARANG</span><i class="bi bi-arrow-right-square-fill ms-3"></i> </a>
 
+                    <div class="col-lg-6 text-md-start text-center">
+                        <h2 class="display-4 fw-bold mb-3" data-aos="fade-up">
+                            Membentuk Generasi
+                            <span class="text-primary" style="position: relative; display: inline-block;">
+                                Berakhlak & Cerdas
+                                <svg style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 10px;" viewBox="0 0 200 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 15 Q 50 0 100 15 T 195 15" fill="none" stroke="#0d6efd" stroke-width="3" stroke-linecap="round" />
+                                </svg>
+                            </span>
+                        </h2>
+
+                        @if($hasOpen)
+                            <div data-aos="fade-up" data-aos-delay="100">
+                                <p class="lead text-muted mb-1">
+                                    Penerimaan Peserta Didik Baru (PPDB) <br> SMP IT Daar El-Muflihin
+                                </p>
+                                <h4 class="fw-bold text-dark mb-1">
+                                    Tahun Ajaran {{ $tahunAjaran->tahun_ajaran }} - {{ $gelombang->name }}
+                                </h4>
+
+                                <p class="text-primary fw-medium mb-3">
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    Periode: {{ \Carbon\Carbon::parse($gelombang->start_date)->translatedFormat('d F Y') }}
+                                    s/d
+                                    {{ \Carbon\Carbon::parse($gelombang->end_date)->translatedFormat('d F Y') }}
+                                </p>
+
+                                <p class="text-secondary mb-4">
+                                    Pendaftaran telah dibuka! Mari tumbuh bersama kami di lingkungan yang Islami dan Qur'ani.
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-center justify-content-md-start gap-3" data-aos="fade-up" data-aos-delay="200">
+                                <a href="{{ route('register') }}" class="btn btn-primary btn-lg rounded-pill hover-lift px-5 shadow-lg">
+                                    Daftar Sekarang <i class="bi bi-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        @else
+                            <div data-aos="fade-up" data-aos-delay="100">
+                                <p class="lead text-muted mb-4">
+                                    Saat ini pendaftaran belum dibuka atau sudah berakhir. Silakan hubungi admin sekolah atau pantau terus halaman ini untuk informasi gelombang selanjutnya.
+                                </p>
+                                <div class="d-flex justify-content-center justify-content-md-start">
+                                    <a href="https://wa.me/nomor-wa-sekolah" class="btn btn-outline-success btn-lg rounded-pill px-5">
+                                        <i class="bi bi-whatsapp me-2"></i> Hubungi Admin
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </section>
+        {{-- <section id="yayasan" class="section py-5">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-5" data-aos="fade-right">
+                        <img src="{{ 'assets/images/gedung.jpeg' }}" class="img-fluid rounded-4 shadow"
+                            alt="Gedung Yayasan">
+                    </div>
+                    <div class="col-lg-7 ps-lg-5" data-aos="fade-left">
+                        <div class="section-title mb-4 text-start">
+                            <span class="text-primary fw-bold text-uppercase">Profil Sekolah</span>
+                            <h2 class="fw-bold">SMPIT Qur'an Daar El-Muflihin</h2>
+                        </div>
+                        <p class="text-secondary">Didirikan pada 16 Juli 2013, Yayasan TK Al-Hikmah merupakan lembaga
+                            pendidikan yang berdedikasi tinggi di wilayah Kabupaten Tangerang. Di bawah kepemimpinan
+                            <strong>Ibu HERYANI, S.Pd.</strong>, yayasan kami berkomitmen menciptakan lingkungan belajar
+                            yang aman, nyaman, dan Islami untuk mendukung tumbuh kembang anak secara holistik.
+                        </p>
+                        <p class="text-secondary">Kami percaya bahwa fondasi karakter yang kuat di usia dini adalah
+                            kunci kesuksesan anak di masa depan.</p>
+                    </div>
+                </div>
+            </div>
+        </section> --}}
+
+        <section id="program" class="section py-5">
+            <div class="container mb-5 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Program Unggulan</h2>
+                <div class="mx-auto underline" style="width: 50px; height: 3px; background: #007bff;"></div>
+            </div>
+            <div class="container">
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="program-card rounded-4 border p-4 text-center h-100 shadow-sm">
+                            <div class="icon-wrapper mb-3 text-warning">
+                                <i class="bi bi-journal-richtext fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">Tahfidz Qur'an</h5>
+                            <p class="small text-muted">Program unggulan hafalan Al-Qur'an dengan target hafalan yang terukur dan bimbingan intensif.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="program-card rounded-4 border p-4 text-center h-100 shadow-sm">
+                            <div class="icon-wrapper mb-3 text-danger">
+                                <i class="bi bi-megaphone-fill fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">Tahsin & Tartil Qur'an</h5>
+                            <p class="small text-muted">Perbaikan bacaan (makhraj & tajwid) agar mampu melantunkan ayat suci dengan indah dan benar.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="program-card rounded-4 border p-4 text-center h-100 shadow-sm">
+                            <div class="icon-wrapper mb-3 text-primary">
+                                <i class="bi  bi-journal-check fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">Tahfidz Hadist Arba'in</h5>
+                            <p class="small text-muted">Menghafal 40 hadist pilihan sebagai fondasi pemahaman dasar hukum Islam dan pembentukan karakter.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="program-card rounded-4 border p-4 text-center h-100 shadow-sm">
+                            <div class="icon-wrapper mb-3 text-success">
+                                <i class="bi bi-chat-left-quote-fill fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">Bilingual Conversation</h5>
+                            <p class="small text-muted">Pembiasaan komunikasi sehari-hari (Daily Conversation) menggunakan Bahasa Arab dan Inggris.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="500">
+                        <div class="program-card rounded-4 border p-4 text-center h-100 shadow-sm">
+                            <div class="icon-wrapper mb-3 text-info">
+                                <i class="bi bi-people-fill fs-1"></i>
+                            </div>
+                            <h5 class="fw-bold">Pidato 3 Bahasa</h5>
+                            <p class="small text-muted">Melatih kepercayaan diri dan kemampuan orasi santri dalam Bahasa Arab, Inggris, dan Indonesia.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-
-        </section><!-- /Hero Section -->
-
-        <!-- About Section -->
-        <section id="about" class="about section light-background">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>About</h2>
-                <p>TK AL-HIKMAH adalah salah satu yayasan pendidikan yang bergerak dalam pendidikan islam yang men </p>
-            </div><!-- End Section Title -->
-
-            <div class="container">
-
-                <div class="row gy-4">
-
-                    <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore
-                            magna aliqua.
-                        </p>
-                        <ul>
-                            <li><i class="bi bi-check2-circle"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat.</span></li>
-                            <li><i class="bi bi-check2-circle"></i> <span>Duis aute irure dolor in reprehenderit in
-                                    voluptate velit.</span></li>
-                            <li><i class="bi bi-check2-circle"></i> <span>Ullamco laboris nisi ut aliquip ex ea
-                                    commodo</span></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
-                        <p>Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                            occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum. </p>
-                        <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
-                    </div>
-
                 </div>
-
             </div>
+        </section>
 
-        </section><!-- /About Section -->
-
-        <!-- Features Section -->
-        <section id="features" class="features section">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Features</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
+        <section id="visi-misi" class="section bg-light py-5">
+            <div class="container mb-5 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Visi & Misi</h2>
+                <p class="text-muted">Arah dan tujuan kami dalam mendidik putra-putri Anda.</p>
+            </div>
             <div class="container">
-
-                <div class="row gy-5">
-
-                    <div class="col-xl-5 d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
-                        <img src="assets/img/features.svg" class="img-fluid" alt="">
-                    </div>
-
-                    <div class="col-xl-7 d-flex" data-aos="fade-up" data-aos-delay="200">
-
-                        <div class="row align-self-center gy-5">
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-award"></i>
-                                <div>
-                                    <h4>Corporis voluptates sit</h4>
-                                    <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut
-                                        aliquip</p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-card-checklist"></i>
-                                <div>
-                                    <h4>Ullamco laboris nisi</h4>
-                                    <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                                        deserunt</p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-dribbble"></i>
-                                <div>
-                                    <h4>Labore consequatur</h4>
-                                    <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere
-                                    </p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-filter-circle"></i>
-                                <div>
-                                    <h4>Beatae veritatis</h4>
-                                    <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-lightning-charge"></i>
-                                <div>
-                                    <h4>Molestiae dolor</h4>
-                                    <p>Et fuga et deserunt et enim. Dolorem architecto ratione tensa raptor marte</p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
-                            <div class="col-md-6 icon-box">
-                                <i class="bi bi-patch-check"></i>
-                                <div>
-                                    <h4>Explicabo consectetur</h4>
-                                    <p>Est autem dicta beatae suscipit. Sint veritatis et sit quasi ab aut inventore</p>
-                                </div>
-                            </div><!-- End Feature Item -->
-
+                <div class="row g-4">
+                    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card h-100 rounded-4 border-0 p-4 text-center shadow-sm">
+                            <div class="icon-box bg-primary-subtle rounded-circle mx-auto mb-3 p-3"
+                                style="width: 70px;">
+                                <i class="bi bi-eye text-primary fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold">Visi</h4>
+                            <p class="text-muted small">Membentuk generasi Qur'an Berakhlak Mulia yang menghafal Al-Qur'an, Memahami hadist, dan Meneladani Nabi Muhammad  SAW, Menguasai ilmu Fiqh serta unggul dalam akademik untuk kehidupan Dunia Akhirat</p>
                         </div>
-
                     </div>
-
-                </div>
-
-            </div>
-
-        </section><!-- /Features Section -->
-
-        <!-- Feature Details Section -->
-        <section id="feature-details" class="feature-details section">
-
-            <div class="container">
-
-                <div class="row gy-4 align-items-center features-item">
-                    <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="100">
-                        <img src="assets/img/features-1.png" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
-                        <h3>Voluptatem dignissimos provident quasi corporis voluptates sit assumenda.</h3>
-                        <p class="fst-italic">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore
-                            magna aliqua.
-                        </p>
-                        <ul>
-                            <li><i class="bi bi-check"></i><span> Ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat.</span></li>
-                            <li><i class="bi bi-check"></i> <span>Duis aute irure dolor in reprehenderit in voluptate
-                                    velit.</span></li>
-                            <li><i class="bi bi-check"></i> <span>Ullam est qui quos consequatur eos accusamus.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div><!-- Features Item -->
-
-                <div class="row gy-4 align-items-center features-item">
-                    <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out"
-                        data-aos-delay="200">
-                        <img src="assets/img/features-2.png" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-md-7 order-2 order-md-1" data-aos="fade-up" data-aos-delay="200">
-                        <h3>Corporis temporibus maiores provident</h3>
-                        <p class="fst-italic">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore
-                            magna aliqua.
-                        </p>
-                        <p>
-                            Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in
-                            culpa qui officia deserunt mollit anim id est laborum
-                        </p>
-                    </div>
-                </div><!-- Features Item -->
-
-                <div class="row gy-4 align-items-center features-item">
-                    <div class="col-md-5 d-flex align-items-center" data-aos="zoom-out">
-                        <img src="assets/img/features-3.png" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-md-7" data-aos="fade-up">
-                        <h3>Sunt consequatur ad ut est nulla consectetur reiciendis animi voluptas</h3>
-                        <p>Cupiditate placeat cupiditate placeat est ipsam culpa. Delectus quia minima quod. Sunt saepe
-                            odit aut quia voluptatem hic voluptas dolor doloremque.</p>
-                        <ul>
-                            <li><i class="bi bi-check"></i> <span>Ullamco laboris nisi ut aliquip ex ea commodo
-                                    consequat.</span></li>
-                            <li><i class="bi bi-check"></i><span> Duis aute irure dolor in reprehenderit in voluptate
-                                    velit.</span></li>
-                            <li><i class="bi bi-check"></i> <span>Facilis ut et voluptatem aperiam. Autem soluta ad
-                                    fugiat</span>.</li>
-                        </ul>
-                    </div>
-                </div><!-- Features Item -->
-
-                <div class="row gy-4 align-items-center features-item">
-                    <div class="col-md-5 order-1 order-md-2 d-flex align-items-center" data-aos="zoom-out">
-                        <img src="assets/img/features-4.png" class="img-fluid" alt="">
-                    </div>
-                    <div class="col-md-7 order-2 order-md-1" data-aos="fade-up">
-                        <h3>Quas et necessitatibus eaque impedit ipsum animi consequatur incidunt in</h3>
-                        <p class="fst-italic">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore
-                            magna aliqua.
-                        </p>
-                        <p>
-                            Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                            reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-                            proident, sunt in
-                            culpa qui officia deserunt mollit anim id est laborum
-                        </p>
-                    </div>
-                </div><!-- Features Item -->
-
-            </div>
-
-        </section><!-- /Feature Details Section -->
-
-        <!-- Gallery Section -->
-        <section id="gallery" class="gallery section">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Gallery</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
-            <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="swiper init-swiper">
-                    <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "centeredSlides": true,
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 1,
-                  "spaceBetween": 0
-                },
-                "768": {
-                  "slidesPerView": 3,
-                  "spaceBetween": 30
-                },
-                "992": {
-                  "slidesPerView": 5,
-                  "spaceBetween": 30
-                },
-                "1200": {
-                  "slidesPerView": 7,
-                  "spaceBetween": 30
-                }
-              }
-            }
-          </script>
-                    <div class="swiper-wrapper align-items-center">
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-1.png"><img
-                                    src="assets/img/app-gallery/app-gallery-1.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-2.png"><img
-                                    src="assets/img/app-gallery/app-gallery-2.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-3.png"><img
-                                    src="assets/img/app-gallery/app-gallery-3.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-4.png"><img
-                                    src="assets/img/app-gallery/app-gallery-4.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-5.png"><img
-                                    src="assets/img/app-gallery/app-gallery-5.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-6.png"><img
-                                    src="assets/img/app-gallery/app-gallery-6.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-7.png"><img
-                                    src="assets/img/app-gallery/app-gallery-7.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-8.png"><img
-                                    src="assets/img/app-gallery/app-gallery-8.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-9.png"><img
-                                    src="assets/img/app-gallery/app-gallery-9.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-10.png"><img
-                                    src="assets/img/app-gallery/app-gallery-10.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-11.png"><img
-                                    src="assets/img/app-gallery/app-gallery-11.png" class="img-fluid"
-                                    alt=""></a></div>
-                        <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery-full"
-                                href="assets/img/app-gallery/app-gallery-12.png"><img
-                                    src="assets/img/app-gallery/app-gallery-12.png" class="img-fluid"
-                                    alt=""></a></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-
-            </div>
-
-        </section><!-- /Gallery Section -->
-
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials section light-background">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Testimonials</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="swiper init-swiper">
-                    <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 600,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": "auto",
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              },
-              "breakpoints": {
-                "320": {
-                  "slidesPerView": 1,
-                  "spaceBetween": 40
-                },
-                "1200": {
-                  "slidesPerView": 2,
-                  "spaceBetween": 20
-                }
-              }
-            }
-          </script>
-                    <div class="swiper-wrapper">
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-wrap">
-                                <div class="testimonial-item">
-                                    <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img"
-                                        alt="">
-                                    <h3>Saul Goodman</h3>
-                                    <h4>Ceo &amp; Founder</h4>
-                                    <div class="stars">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p>
-                                        <i class="bi bi-quote quote-icon-left"></i>
-                                        <span>Proin iaculis purus consequat sem cure digni ssim donec porttitora entum
-                                            suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et.
-                                            Maecen aliquam, risus at semper.</span>
-                                        <i class="bi bi-quote quote-icon-right"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-wrap">
-                                <div class="testimonial-item">
-                                    <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img"
-                                        alt="">
-                                    <h3>Sara Wilsson</h3>
-                                    <h4>Designer</h4>
-                                    <div class="stars">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p>
-                                        <i class="bi bi-quote quote-icon-left"></i>
-                                        <span>Export tempor illum tamen malis malis eram quae irure esse labore quem
-                                            cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua
-                                            noster fugiat irure amet legam anim culpa.</span>
-                                        <i class="bi bi-quote quote-icon-right"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-wrap">
-                                <div class="testimonial-item">
-                                    <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
-                                        alt="">
-                                    <h3>Jena Karlis</h3>
-                                    <h4>Store Owner</h4>
-                                    <div class="stars">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p>
-                                        <i class="bi bi-quote quote-icon-left"></i>
-                                        <span>Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla
-                                            quem veniam duis minim tempor labore quem eram duis noster aute amet eram
-                                            fore quis sint minim.</span>
-                                        <i class="bi bi-quote quote-icon-right"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-wrap">
-                                <div class="testimonial-item">
-                                    <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img"
-                                        alt="">
-                                    <h3>Matt Brandon</h3>
-                                    <h4>Freelancer</h4>
-                                    <div class="stars">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p>
-                                        <i class="bi bi-quote quote-icon-left"></i>
-                                        <span>Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export
-                                            minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt
-                                            elit fore quem dolore labore illum veniam.</span>
-                                        <i class="bi bi-quote quote-icon-right"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                        <div class="swiper-slide">
-                            <div class="testimonial-wrap">
-                                <div class="testimonial-item">
-                                    <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img"
-                                        alt="">
-                                    <h3>John Larson</h3>
-                                    <h4>Entrepreneur</h4>
-                                    <div class="stars">
-                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                            class="bi bi-star-fill"></i>
-                                    </div>
-                                    <p>
-                                        <i class="bi bi-quote quote-icon-left"></i>
-                                        <span>Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam
-                                            tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum
-                                            fugiat legam esse veniam culpa fore nisi cillum quid.</span>
-                                        <i class="bi bi-quote quote-icon-right"></i>
-                                    </p>
-                                </div>
-                            </div>
-                        </div><!-- End testimonial item -->
-
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-
-            </div>
-
-        </section><!-- /Testimonials Section -->
-
-        <!-- Pricing Section -->
-        <section id="pricing" class="pricing section">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Pricing</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
-            <div class="container">
-
-                <div class="row g-4 g-lg-0">
-
-                    <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-                        <div class="pricing-item">
-                            <h3>Free Plan</h3>
-                            <h4><sup>$</sup>0<span> / month</span></h4>
-                            <ul>
-                                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                                <li class="na"><i class="bi bi-x"></i> <span>Pharetra massa massa ultricies</span>
-                                </li>
-                                <li class="na"><i class="bi bi-x"></i> <span>Massa ultricies mi quis
-                                        hendrerit</span></li>
+                    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card h-100 rounded-4 border-0 p-4 shadow-sm">
+                            <h4 class="fw-bold mb-3"><i class="bi bi-list-check text-primary me-2"></i>Misi Kami</h4>
+                            <ul class="list-unstyled text-secondary">
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Membimbing siswa menghafal dan menjaga hafalan Al-Qur'an</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Mengajarkan Hadist serta menumbuhkan kecintaan kepada Nabi Muhammad SAW Melalui Keteladanan Beliau</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Membina akhlaq islami dalam keseharian dengan meneladani sunnah Nabi</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Mengajarkan fiqh dasar agar dapat beribadah sesuai syariat islam</li>
+                                <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    Menguatkan akademik agar seimbang antara ilmu agama dan umum</li>
                             </ul>
-                            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
                         </div>
-                    </div><!-- End Pricing Item -->
-
-                    <div class="col-lg-4 featured" data-aos="zoom-in" data-aos-delay="200">
-                        <div class="pricing-item">
-                            <h3>Business Plan</h3>
-                            <h4><sup>$</sup>29<span> / month</span></h4>
-                            <ul>
-                                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                                <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-                                <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
-                            </ul>
-                            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
-                        </div>
-                    </div><!-- End Pricing Item -->
-
-                    <div class="col-lg-4" data-aos="zoom-in" data-aos-delay="100">
-                        <div class="pricing-item">
-                            <h3>Developer Plan</h3>
-                            <h4><sup>$</sup>49<span> / month</span></h4>
-                            <ul>
-                                <li><i class="bi bi-check"></i> <span>Quam adipiscing vitae proin</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nec feugiat nisl pretium</span></li>
-                                <li><i class="bi bi-check"></i> <span>Nulla at volutpat diam uteera</span></li>
-                                <li><i class="bi bi-check"></i> <span>Pharetra massa massa ultricies</span></li>
-                                <li><i class="bi bi-check"></i> <span>Massa ultricies mi quis hendrerit</span></li>
-                            </ul>
-                            <div class="text-center"><a href="#" class="buy-btn">Buy Now</a></div>
-                        </div>
-                    </div><!-- End Pricing Item -->
-
+                    </div>
                 </div>
-
             </div>
+        </section>
 
-        </section><!-- /Pricing Section -->
 
-        <!-- Faq Section -->
-        <section id="faq" class="faq section light-background">
 
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Frequently Asked Questions</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
+        <section id="kegiatan" class="section bg-light py-5">
+            <div class="container mb-5 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Kegiatan Sekolah</h2>
+            </div>
             <div class="container">
-
-                <div class="row justify-content-center">
-
-                    <div class="col-lg-8">
-
-                        <div class="faq-container">
-
-                            <div class="faq-item faq-active" data-aos="fade-up" data-aos-delay="200">
-                                <i class="faq-icon bi bi-question-circle"></i>
-                                <h3>Non consectetur a erat nam at lectus urna duis?</h3>
-                                <div class="faq-content">
-                                    <p>Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus
-                                        laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor
-                                        rhoncus dolor purus non.</p>
-                                </div>
-                                <i class="faq-toggle bi bi-chevron-right"></i>
-                            </div><!-- End Faq item-->
-
-                            <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
-                                <i class="faq-icon bi bi-question-circle"></i>
-                                <h3>Feugiat scelerisque varius morbi enim nunc faucibus a pellentesque?</h3>
-                                <div class="faq-content">
-                                    <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id
-                                        interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus
-                                        scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim.
-                                        Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
-                                </div>
-                                <i class="faq-toggle bi bi-chevron-right"></i>
-                            </div><!-- End Faq item-->
-
-                            <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
-                                <i class="faq-icon bi bi-question-circle"></i>
-                                <h3>Dolor sit amet consectetur adipiscing elit pellentesque?</h3>
-                                <div class="faq-content">
-                                    <p>Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci.
-                                        Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl
-                                        suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis
-                                        convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis
-                                    </p>
-                                </div>
-                                <i class="faq-toggle bi bi-chevron-right"></i>
-                            </div><!-- End Faq item-->
-
-                            <div class="faq-item" data-aos="fade-up" data-aos-delay="500">
-                                <i class="faq-icon bi bi-question-circle"></i>
-                                <h3>Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?</h3>
-                                <div class="faq-content">
-                                    <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id
-                                        interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus
-                                        scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim.
-                                        Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
-                                </div>
-                                <i class="faq-toggle bi bi-chevron-right"></i>
-                            </div><!-- End Faq item-->
-
-                            <div class="faq-item" data-aos="fade-up" data-aos-delay="600">
-                                <i class="faq-icon bi bi-question-circle"></i>
-                                <h3>Tempus quam pellentesque nec nam aliquam sem et tortor consequat?</h3>
-                                <div class="faq-content">
-                                    <p>Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse
-                                        in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl
-                                        suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in
-                                    </p>
-                                </div>
-                                <i class="faq-toggle bi bi-chevron-right"></i>
-                            </div><!-- End Faq item-->
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section><!-- /Faq Section -->
-
-        <!-- Contact Section -->
-        <section id="contact" class="contact section">
-
-            <!-- Section Title -->
-            <div class="container section-title" data-aos="fade-up">
-                <h2>Contact</h2>
-                <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-            </div><!-- End Section Title -->
-
-            <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-                <div class="row gy-4">
-
-                    <div class="col-lg-6">
-
-                        <div class="row gy-4">
-                            <div class="col-md-6">
-                                <div class="info-item" data-aos="fade" data-aos-delay="200">
-                                    <i class="bi bi-geo-alt"></i>
-                                    <h3>Address</h3>
-                                    <p>A108 Adam Street</p>
-                                    <p>New York, NY 535022</p>
-                                </div>
-                            </div><!-- End Info Item -->
-
-                            <div class="col-md-6">
-                                <div class="info-item" data-aos="fade" data-aos-delay="300">
-                                    <i class="bi bi-telephone"></i>
-                                    <h3>Call Us</h3>
-                                    <p>+1 5589 55488 55</p>
-                                    <p>+1 6678 254445 41</p>
-                                </div>
-                            </div><!-- End Info Item -->
-
-                            <div class="col-md-6">
-                                <div class="info-item" data-aos="fade" data-aos-delay="400">
-                                    <i class="bi bi-envelope"></i>
-                                    <h3>Email Us</h3>
-                                    <p>info@example.com</p>
-                                    <p>contact@example.com</p>
-                                </div>
-                            </div><!-- End Info Item -->
-
-                            <div class="col-md-6">
-                                <div class="info-item" data-aos="fade" data-aos-delay="500">
-                                    <i class="bi bi-clock"></i>
-                                    <h3>Open Hours</h3>
-                                    <p>Monday - Friday</p>
-                                    <p>9:00AM - 05:00PM</p>
-                                </div>
-                            </div><!-- End Info Item -->
-
-                        </div>
-
-                    </div>
-
-                    <div class="col-lg-6">
-                        <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
-                            data-aos-delay="200">
-                            <div class="row gy-4">
-
-                                <div class="col-md-6">
-                                    <input type="text" name="name" class="form-control"
-                                        placeholder="Your Name" required="">
-                                </div>
-
-                                <div class="col-md-6 ">
-                                    <input type="email" class="form-control" name="email"
-                                        placeholder="Your Email" required="">
-                                </div>
-
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="subject" placeholder="Subject"
-                                        required="">
-                                </div>
-
-                                <div class="col-12">
-                                    <textarea class="form-control" name="message" rows="6" placeholder="Message" required=""></textarea>
-                                </div>
-
-                                <div class="col-12 text-center">
-                                    <div class="loading">Loading</div>
-                                    <div class="error-message"></div>
-                                    <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                                    <button type="submit">Send Message</button>
-                                </div>
-
+                <div class="row g-4">
+                    <div class="col-lg-4" data-aos="fade-up">
+                        <div class="activity-item position-relative rounded-4 overflow-hidden shadow">
+                            <img src="assets/images/kegiatan-1.jpg" class="img-fluid" alt="Kegiatan Sholat">
+                            <div class="activity-overlay p-3 text-white">
+                                <h5 class="fw-bold">Sholat Berjamaah</h5>
+                                <p class="small mb-0">Pembiasaan ibadah sejak usia dini.</p>
                             </div>
-                        </form>
-                    </div><!-- End Contact Form -->
-
+                        </div>
+                    </div>
+                    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="activity-item position-relative rounded-4 overflow-hidden shadow">
+                            <img src="assets/images/kegiatan-2.jpg" class="img-fluid" alt="Market Day">
+                            <div class="activity-overlay p-3 text-white">
+                                <h5 class="fw-bold">Market Day</h5>
+                                <p class="small mb-0">Melatih jiwa kewirausahaan dan interaksi sosial.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="activity-item position-relative rounded-4 overflow-hidden shadow">
+                            <img src="assets/images/kegiatan-3.jpg" class="img-fluid" alt="Luar Kelas">
+                            <div class="activity-overlay p-3 text-white">
+                                <h5 class="fw-bold">Field Trip</h5>
+                                <p class="small mb-0">Pembelajaran langsung di lingkungan luar sekolah.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
+        </section>
 
-        </section><!-- /Contact Section -->
+        <section id="gallery" class="gallery section py-5">
+            <div class="section-title container mb-5 text-center" data-aos="fade-up">
+                <h2 class="fw-bold">Galeri Foto</h2>
+            </div>
+            <div class="container" data-aos="fade-up">
+            </div>
+        </section>
 
     </main>
 
+    <style>
+        /* Modern Enhancements */
+        :root {
+            --primary-color: #007bff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #444;
+        }
+
+        .section-title h2 {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .btn-login {
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .program-card {
+            background: #fff;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-item img {
+            transition: transform 0.5s ease;
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .activity-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .activity-item:hover .activity-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .activity-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .hero h2 span {
+            color: var(--primary-color);
+        }
+    </style>
+
     <footer id="footer" class="footer">
 
-        <div class="footer-newsletter">
-            <div class="container">
-                <div class="row justify-content-center text-center">
-                    <div class="col-lg-6">
-                        <h4>Join Our Newsletter</h4>
-                        <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
-                        <form action="forms/newsletter.php" method="post" class="php-email-form">
-                            <div class="newsletter-form"><input type="email" name="email"><input type="submit"
-                                    value="Subscribe"></div>
-                            <div class="loading">Loading</div>
-                            <div class="error-message"></div>
-                            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="container footer-top">
-            <div class="row gy-4">
-                <div class="col-lg-4 col-md-6 footer-about">
+
+        <div class="footer-top container">
+            <div class="row gy-4 justify-content-center">
+                <div class="col-lg-8 col-md-6 footer-about">
                     <a href="index.html" class="d-flex align-items-center">
-                        <span class="sitename">Appland</span>
+                        <span class="sitename">SMPIT QUR'AN Daar El-Muflihin</span>
                     </a>
                     <div class="footer-contact pt-3">
-                        <p>A108 Adam Street</p>
-                        <p>New York, NY 535022</p>
-                        <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-                        <p><strong>Email:</strong> <span>info@example.com</span></p>
+                        <p>Cikande Permai</p>
+                        <p>Serang, Banten</p>
+
                     </div>
                 </div>
 
-                <div class="col-lg-2 col-md-3 footer-links">
+                <div class="col-lg-3 col-md-3 footer-links">
                     <h4>Useful Links</h4>
                     <ul>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Home</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">About us</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Services</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Terms of service</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#hero">Beranda</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#about">Tentang</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#gallery">Galeri</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#faq">Terms of service</a></li>
                     </ul>
                 </div>
 
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Our Services</h4>
-                    <ul>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Web Design</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Web Development</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Product Management</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Marketing</a></li>
-                    </ul>
-                </div>
 
-                <div class="col-lg-4 col-md-12">
-                    <h4>Follow Us</h4>
-                    <p>Cras fermentum odio eu feugiat lide par naso tierra videa magna derita valies</p>
-                    <div class="social-links d-flex">
-                        <a href=""><i class="bi bi-twitter-x"></i></a>
-                        <a href=""><i class="bi bi-facebook"></i></a>
-                        <a href=""><i class="bi bi-instagram"></i></a>
-                        <a href=""><i class="bi bi-linkedin"></i></a>
-                    </div>
-                </div>
+
 
             </div>
         </div>
 
-        <div class="container copyright text-center mt-4">
-            <p>© <span>Copyright</span> <strong class="px-1 sitename">Appland</strong> <span>All Rights Reserved</span>
+        <div class="copyright container mt-4 text-center">
+            <p>© <span>Copyright</span> <strong class="sitename px-1"></strong> <span>All Rights Reserved</span>
             </p>
-            <div class="credits">
-                <!-- All the links in the footer should remain intact. -->
-                <!-- You can delete the links only if you've purchased the pro version. -->
-                <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-            </div>
+
         </div>
 
     </footer>

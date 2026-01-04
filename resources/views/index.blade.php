@@ -18,11 +18,12 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
+    @stack('styles')
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/logo.ico') }}" />
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 

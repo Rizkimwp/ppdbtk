@@ -19,8 +19,17 @@ class DatabaseSeeder extends Seeder
             'username' => 'admin',
             'name' => 'Rizky Maulan',
             'role' => 'admin',
-            'password' => bcrypt('admin'),
+            'phone' => '081234567890',
+            'password' => bcrypt('12345678'),
             'email' => 'test@example.com',
+        ]);
+
+        $this->call([
+            AgamaSeeder::class,
+            PekerjaanSeeder::class,
+            PendidikanSeeder::class,
+            PenghasilanSeeder::class,
+            // tambahin seeder lain di sini
         ]);
     }
 }

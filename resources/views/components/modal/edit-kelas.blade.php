@@ -59,8 +59,10 @@
 
 
                 // Set form action
+                let urlTemplate = "{{ route('kelas.update', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('editForm');
-                form.action = `/kelas/${id}`;
+                form.action = url;
 
                 // Fill form inputs
                 document.getElementById('edit_nama').value = nama;

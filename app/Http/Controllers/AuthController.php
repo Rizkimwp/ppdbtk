@@ -9,14 +9,19 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function index() {
+    public function index()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
 
-        if(Auth::check()) {
-            return redirect ('/dashboard');
+            if ($user->role === 'admin') {
+                return redirect('/dashboard-admin');
+            }
 
-        }else{
-            return view('pages.login');
+            return redirect('/dashboard');
         }
+
+        return view('pages.login');
     }
 
     public function loginsso() {
@@ -37,6 +42,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:16|min:4',
+            'phone' => 'required|string|max:15',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string',
             'konfirmasi' => 'required|string|same:password',
@@ -45,6 +51,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
+            'phone' => $request->phone,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'siswa'
@@ -61,7 +68,14 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('username', 'password'))) {
-            return redirect()->route('dashboard'); // Use a named route
+
+            $user = Auth::user();
+
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard-admin');
+            }
+
+            return redirect()->route('dashboard');
         }
 
         return redirect()->back()->with('error', 'Username atau Password Salah');

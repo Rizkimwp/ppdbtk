@@ -23,7 +23,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/dashboard">
+                <a class="nav-link" href="{{ $userRole === 'admin' ? url('/dashboard-admin') : url('/dashboard') }}">
+
                     <span class="menu-title">Dashboard</span>
                     <i class="mdi mdi-home menu-icon"></i>
                 </a>
@@ -46,15 +47,21 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('tahun-ajaran.index') }}">Tahun Ajaran</a>
                         </li>
-                        {{-- <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('gelombang.index') }}">Gelombang</a>
-                        </li> --}}
+                        </li>
                     </ul>
                 </div>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('list-berkas.index') }}">
                     <span class="menu-title">List Persyaratan</span>
+                    <i class="mdi mdi-clipboard-list menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('pernyataan.index') }}">
+                    <span class="menu-title">List Pernyataan</span>
                     <i class="mdi mdi-clipboard-list menu-icon"></i>
                 </a>
             </li>
@@ -82,17 +89,18 @@
                 </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('validasi-berkas.index') }}">
-                    <span class="menu-title">Validasi Berkas</span>
-                    <i class="mdi mdi-file-check menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{{ route('pembayaran.index') }}">
                     <span class="menu-title">Pembayaran</span>
                     <i class="mdi mdi-contactless-payment menu-icon"></i>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('validasi-berkas.index') }}">
+                    <span class="menu-title">Validasi Berkas</span>
+                    <i class="mdi mdi-file-check menu-icon"></i>
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#kelas" aria-expanded="false"
                     aria-controls="kelas">
@@ -114,11 +122,11 @@
         @else
             <li class="nav-item nav-profile">
                 <a href="#" class="nav-link">
-                    <div class="nav-profile-image">
+                    {{-- <div class="nav-profile-image">
                         <img src="{{ asset('assets/images/faces/face1.jpg') }}" alt="profile" />
                         <span class="login-status online"></span>
                         <!--change to offline or busy as needed-->
-                    </div>
+                    </div> --}}
                     <div class="nav-profile-text d-flex flex-column">
                         <!-- Display the logged-in user's name -->
                         <span class="font-weight-bold mb-2">{{ $username }}</span>
@@ -139,15 +147,15 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('calon-siswa.create') }}">
-                    <span class="menu-title">Isi Biodata</span>
-                    <i class="mdi mdi-plus-box menu-icon"></i>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{{ route('pembayaranSiswa') }}">
                     <span class="menu-title">Pembayaran</span>
                     <i class="mdi mdi-contactless-payment menu-icon"></i>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('calon-siswa.create') }}">
+                    <span class="menu-title">Isi Biodata</span>
+                    <i class="mdi mdi-plus-box menu-icon"></i>
                 </a>
             </li>
         @endif

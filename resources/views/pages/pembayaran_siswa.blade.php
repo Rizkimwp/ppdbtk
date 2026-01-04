@@ -4,149 +4,183 @@
 
 @section('content')
     <div class="content-wrapper">
-        <div class="page-header">
-            <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
+        {{-- HEADER --}}
+        <div class="page-header mb-4">
+            <h3 class="page-title d-flex align-items-center">
+                <span class="page-title-icon bg-gradient-primary me-2 text-white">
                     <i class="mdi mdi-contactless-payment"></i>
-                </span> Pembayaran
+                </span>
+                Pembayaran
             </h3>
-            <nav aria-label="breadcrumb">
-                <ul class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-                    </li>
-                </ul>
-            </nav>
         </div>
-        <div class="row">
-            <div class="col-lg-3 mb-lg-0 mb-3">
-                <div class="card p-3">
-                    <div class="img-box text-center">
-                        <img src="{{ asset('assets/images/dana.png') }}" alt="" class="img-fluid w-11 mb-4"
-                            width="150" height="80">
-                    </div>
 
-                    <div class="d-flex align-items-center justify-content-between">
-                        <label class="fw-bold" for="">0878-7497-9361</label>
-                        <small><span class="fw-bold">An. Heryani</span> </small>
-                    </div>
-                </div>
-            </div>
+        <div class="row g-4">
+            @if (is_null($tahunAjaran) || is_null($gelombang))
+                {{-- TAHUN AJARAN TIDAK AKTIF --}}
+                {{-- ANIMASI LOTTIE --}}
+                <div class="col-12 mb-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center text-center py-5">
 
+                            <div id="lottie-animation" style="width: 280px; height: 280px;"></div>
 
+                            <h4 class="mt-4 fw-semibold">
+                                Belum Ada Tahun Ajaran / Gelombang Yang Aktif
+                            </h4>
 
+                            <p class="text-muted mt-2 mb-0">
+                                Silakan hubungi admin atau tunggu pengumuman pembukaan PPDB.
+                            </p>
 
-            <div class="col-12 mt-4">
-                <div class="card p-3">
-
-                    <div class="card-body border p-0">
-                        <p>
-                            <a class="btn btn-primary p-2 w-100 h-100 d-flex align-items-center justify-content-between"
-                                data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true"
-                                aria-controls="collapseExample">
-                                <span class="fw-bold">UPLOAD BUKTI PEMBAYARAN</span>
-
-                            </a>
-                        </p>
-                        <div class="collapse show p-3 pt-0" id="collapseExample">
-                            <div class="row">
-                                @if (isset($pembayaran))
-                                    <div class="col-lg-5 mb-lg-0 mb-3">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="fw-bold">PEMBAYARAN</td>
-                                                    <td class="c-green">Pendaftaran</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">JUMLAH</td>
-                                                    <td class="c-green">Rp65.000</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">STATUS</td>
-                                                    <td class="c-green">
-                                                        @if ($pembayaran->status === 'lunas')
-                                                            <label class="badge badge-success">LUNAS</label>
-                                                        @elseif ($pembayaran->status === 'belum_lunas')
-                                                            <label class="badge badge-info">BELUM LUNAS</label>
-                                                        @elseif ($pembayaran->status === 'pending')
-                                                            <label class="badge badge-warning">MENUNGGU VALIDASI</label>
-                                                        @else
-                                                            <label class="badge badge-danger">TIDAK VALID</label>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            <tbody>
-                                        </table>
-                                        <p class="fw-bold text-danger mt-2">Note: Jika sudah transfer, silahkan upload bukti
-                                            transaksi
-                                            untuk di cek oleh admin
-                                        </p>
-                                    </div>
-                                @endif
-
-                                <div class=" @if (isset($pembayaran)) col-lg-7 @else col-lg-12 @endif">
-                                    @if (isset($pembayaran))
-                                        <form action="{{ route('uploadbukti', $pembayaran->id) }}" class="form"
-                                            method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <input type="file" name="file_path"
-                                                        class="form-control file-upload-default custom-file-input @error('file_path') is-invalid @enderror"
-                                                        placeholder="Masukan Bukti Transaksi Disini">
-                                                    @error('file_path')
-                                                        <span class="invalid-feedback" role="alert">
-                                                            <strong>{{ $message }}</strong>
-                                                        </span>
-                                                    @enderror
-                                                </div>
-                                                <div class="col-12 mt-3">
-                                                    <button class="btn btn-primary w-100"
-                                                        @if ($pembayaran->status === 'lunas') disabled @endif>
-                                                        Upload Bukti Transaksi
-                                                    </button>
-
-                                                </div>
-                                            </div>
-                                        </form>
-                                    @else
-                                        <div class="d-flex flex-column justify-content-center align-items-center mt-4">
-                                            <div class="text-center" id="lottie-animation"
-                                                style="width: 200px; height: 200px;"></div>
-                                            <p>Belum Ada Tagihan</p>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="col-lg-12">
-                                    @if (session('success'))
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            {{ session('success') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
-
-                                    @if (session('error'))
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            {{ session('error') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            @else
+                {{-- INFO REKENING --}}
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <img src="{{ asset('assets/images/dana.png') }}" class="img-fluid mb-3" width="150">
+
+                            <hr>
+
+                            <p class="fw-bold fs-5 mb-1">0878-7497-9361</p>
+                            <small class="text-muted">An. <strong>Heryani</strong></small>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- FORM PEMBAYARAN --}}
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="show collapse" id="collapseExample">
+                                <div class="row g-3">
+
+                                    {{-- ===============================
+                                SUDAH ADA PEMBAYARAN
+                            ================================ --}}
+                                    @if (!is_null($pembayaran))
+
+                                        <div class="col-md-6">
+                                            <table class="table-sm table">
+                                                <tr>
+                                                    <td class="fw-bold">Jenis</td>
+                                                    <td>Pendaftaran</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Jumlah</td>
+                                                    <td>Rp 200.000</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Status</td>
+                                                    <td>
+                                                        @if ($pembayaran->status === 'lunas')
+                                                            <span class="badge bg-success">LUNAS</span>
+                                                        @elseif ($pembayaran->status === 'pending')
+                                                            <span class="badge bg-warning">MENUNGGU VALIDASI</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">BELUM LUNAS</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <p class="text-muted small">
+                                                Bukti pembayaran sudah diupload.
+                                                @if ($pembayaran->status === 'pending')
+                                                    Menunggu validasi admin.
+                                                @endif
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-6 d-flex align-items-center">
+                                            <button class="btn btn-secondary w-100" disabled>
+                                                Bukti Pembayaran Sudah Diupload
+                                            </button>
+                                        </div>
+
+                                        {{-- ===============================
+                                BELUM ADA PEMBAYARAN
+                            ================================ --}}
+                                    @else
+                                        {{-- ALERT INFO --}}
+                                        <div class="col-12">
+                                            <div class="alert alert-info d-flex align-items-start">
+                                                <i class="mdi mdi-information-outline fs-4 me-2"></i>
+                                                <div>
+                                                    <strong>Informasi Pembayaran</strong><br>
+                                                    Biaya formulir pendaftaran sebesar
+                                                    <strong>Rp 200.000</strong>.
+                                                    Silakan transfer ke rekening tertera,
+                                                    lalu upload bukti pembayaran sebelum melanjutkan.
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- FORM --}}
+                                        <div class="col-12">
+                                            <form action="{{ route('uploadbukti') }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Jumlah Pembayaran</label>
+                                                    <input type="text" id="amount_display" class="form-control"
+                                                        value="Rp 200.000" readonly>
+
+                                                    <!-- nilai asli untuk backend -->
+                                                    <input type="hidden" name="amount" id="amount" value="200000">
+                                                </div>
+
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Upload Bukti Pembayaran</label>
+                                                    <input type="file" name="file_path"
+                                                        class="form-control @error('file_path') is-invalid @enderror"
+                                                        required>
+                                                    @error('file_path')
+                                                        <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+
+                                                <button class="btn btn-primary w-100">
+                                                    Upload Bukti Transaksi
+                                                </button>
+                                            </form>
+                                        </div>
+
+                                    @endif
+
+                                    {{-- ALERT SESSION --}}
+                                    <div class="col-12">
+                                        @if (session('success'))
+                                            <div class="alert alert-success alert-dismissible fade show">
+                                                {{ session('success') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        @endif
+
+                                        @if (session('error'))
+                                            <div class="alert alert-danger alert-dismissible fade show">
+                                                {{ session('error') }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
+
 
 
 @section('script')

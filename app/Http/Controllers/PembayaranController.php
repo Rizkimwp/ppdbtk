@@ -2,47 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ValidateUploadBukti;
+use App\Models\Pendaftaran;
 use App\Models\User;
 use App\Models\Gelombang;
 use App\Models\Pembayaran;
 use App\Models\BerkasSiswa;
 use App\Models\TahunAjaran;
+use Date;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\ValidasiSelesaiNotification;
-
+use Illuminate\Support\Str;
 class PembayaranController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function pembayaranSiswa() {
-        $currentUser = Auth::user();
+    public function pembayaranSiswa()
+    {
+        $user = Auth::user();
 
-        // Cek apakah calonsiswa ada
-        if (!$currentUser || !$currentUser->calonsiswa) {
-            return view('pages.pembayaran_siswa')->with('error', 'Data calon siswa tidak ditemukan.');
+
+        $tahunAjaran = TahunAjaran::current();
+        $gelombang = Gelombang::current();
+
+        // Default
+        $pendaftaran = null;
+        $pembayaran = null;
+
+        // Jika sudah punya calon siswa
+        if ($tahunAjaran && $gelombang) {
+
+            $pendaftaran = Pendaftaran::where('user_id', $user->id)
+                ->where('tahun_ajaran_id', $tahunAjaran->id)
+                ->where('gelombang_id', $gelombang->id)
+                ->first();
+
+            if ($pendaftaran) {
+                $pembayaran = Pembayaran::where('pendaftaran_id', $pendaftaran->id)
+                    ->latest()
+                    ->first();
+            }
         }
 
-        // Ambil ID calon siswa
-        $calonSiswaId = $currentUser->calonsiswa->id;
-
-        // Cek apakah semua berkas calon siswa valid
-        $allBerkasValid = BerkasSiswa::where('calon_siswa_id', $calonSiswaId)
-            ->where('status', 'VALID')
-            ->count() === BerkasSiswa::where('calon_siswa_id', $calonSiswaId)->count();
-
-        if (!$allBerkasValid) {
-            return view('pages.pembayaran_siswa')->with('error', 'Berkas calon siswa belum lengkap atau tidak valid.');
-        }
-
-        // Ambil data pembayaran untuk calon siswa
-        $pembayaran = Pembayaran::where('calon_siswa_id', $calonSiswaId)->first();
-
-        // Tampilkan view
-        return view('pages.pembayaran_siswa', compact('pembayaran'));
+        return view('pages.pembayaran_siswa', compact(
+            'pembayaran',
+            'pendaftaran',
+            'tahunAjaran',
+            'gelombang'
+        ));
     }
 
 
@@ -50,36 +63,69 @@ class PembayaranController extends Controller
     public function index(Request $request)
     {
         $query = Pembayaran::query();
-        $tahunAjaranList = TahunAjaran::get();
 
-        // Cari berdasarkan tahun ajaran aktif
-        $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
-
-        if ($activeTahunAjaran) {
-            $tahunAjaranId = $request->input('tahun_ajaran_id', TahunAjaran::where('id', $activeTahunAjaran->id)->value('id'));
-
-            if ($tahunAjaranId) {
-                // Filter pembayaran berdasarkan gelombang
-                $query->whereHas('calonsiswa', function ($q) use ($tahunAjaranId) {
-                    $q->where('tahun_ajaran_id', $tahunAjaranId);
-                });
-            }
-        } else {
-            return response()->view('pages.pembayaran', compact('tahunAjaranList'))->withErrors('Tidak ada tahun ajaran aktif.');
-        }
-
-        // Cari berdasarkan nama
-        if ($request->filled('nama')) {
-            $query->whereHas('calonsiswa', function ($q) use ($request) {
-                $q->where('nama_lengkap', 'like', '%' . $request->input('nama') . '%');
+        /**
+         * =========================
+         * FILTER TAHUN AJARAN
+         * =========================
+         */
+        if ($request->filled('tahun_ajaran_id')) {
+            $query->whereHas('pendaftaran', function ($q) use ($request) {
+                $q->where('tahun_ajaran_id', $request->tahun_ajaran_id);
             });
         }
 
-        // Paginate the results
-        $pembayaran = $query->paginate($request->input('per_page', 5));
+        /**
+         * =========================
+         * FILTER BULAN
+         * =========================
+         */
+        if ($request->filled('bulan')) {
+            $query->whereMonth('payment_date', $request->bulan);
+        }
 
-        return view('pages.pembayaran', compact('pembayaran', 'tahunAjaranList', 'tahunAjaranId'));
+        /**
+         * =========================
+         * FILTER NAMA
+         * - Jika calon siswa SUDAH ADA → filter ke nama calon siswa
+         * - Jika BELUM ADA → tetap tampil
+         * =========================
+         */
+        if ($request->filled('nama')) {
+            $query->where(function ($q) use ($request) {
+                $q->whereHas('pendaftaran.calonSiswa', function ($cs) use ($request) {
+                    $cs->where('nama_lengkap', 'like', '%' . $request->nama . '%');
+                });
+            });
+        }
+
+        /**
+         * =========================
+         * FILTER STATUS
+         * =========================
+         */
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        /**
+         * =========================
+         * LOAD RELASI (NULL SAFE)
+         * =========================
+         */
+        $pembayaran = $query
+            ->with([
+                'pendaftaran:id,user_id,calon_siswa_id,tahun_ajaran_id',
+                'pendaftaran.calonSiswa:id,nama_lengkap',
+                'pendaftaran.user:id,name,phone',
+            ])
+            ->latest('payment_date')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('pages.pembayaran', compact('pembayaran'));
     }
+
 
 
     /**
@@ -118,86 +164,117 @@ class PembayaranController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
-{
-    try {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'status' => 'required', // Adjust validation as needed
-        ]);
-
-        // Find the Pembayaran record by ID
-        $pembayaran = Pembayaran::findOrFail($id);
-        $pembayaran->update($validatedData);
-
-        // Assume you want to notify the user associated with this payment
-        $user = User::find($pembayaran->calonsiswa->user_id); // Adjust based on your relationship
-
-
-        if ($user) {
-            // Determine the notification title based on the payment status
-            $title = $pembayaran->status === 'lunas' ? 'Bukti Pembayaran Valid' : ($pembayaran->status === 'gagal' ? 'Bukti Pembayaran Tidak Valid' : 'Pembayaran Diperbarui');
-
-            // Prepare notification data
-            $data = [
-                'nama_berkas' => 'Pendaftaran', // Adjust as needed
-                'status' => $pembayaran->status,
-                'title' => $title,
-                'message' => 'Status Pembayaran telah diperbarui.',
-            ];
-
-            // Send notification
-            Notification::send($user, new ValidasiSelesaiNotification($data));
-        }
-
-
-        // Redirect back with success message
-        return redirect()->back()->with('success', 'Pembayaran Berhasil Di Perbarui');
-    } catch (\Throwable $e) {
-        // Redirect back with error message in case of exception
-        return redirect()->back()->with('error', 'Gagal Memperbarui Pembayaran: ' . $e->getMessage());
-    }
-}
-
-
-    public function uploadsiswa(Request $request, $id)
     {
         try {
-            // Validate the request data
+            // Validate the incoming request data
             $validatedData = $request->validate([
-                'file_path' => 'required|file|mimes:pdf,jpeg,png|max:2048', // Adjust validation as needed
+                'status' => 'required', // Adjust validation as needed
             ]);
 
-            // Find the pembayaran record by ID
+            // Find the Pembayaran record by ID
             $pembayaran = Pembayaran::findOrFail($id);
-
-            // Handle file upload
-if ($request->hasFile('file_path')) {
-    // Delete the old file if it exists
-    if ($pembayaran->file_path && Storage::exists($pembayaran->file_path)) {
-        Storage::delete($pembayaran->file_path);
-    }
-    // Store the new file
-    $uploadedFile = $request->file('file_path');
-    $filePath = $uploadedFile->storeAs('berkas_siswa', $uploadedFile->getClientOriginalName(), 'public');
-    // Update file_path in validated data
-    $validatedData['file_path'] = $filePath;
-}
-            // Update the pembayaran record with validated data
             $pembayaran->update($validatedData);
+            $pendaftaran = Pendaftaran::find($pembayaran->pendaftaran_id);
+            // Assume you want to notify the user associated with this payment
+            $user = User::find($pendaftaran->user_id); // Adjust based on your relationship
 
-            // Set additional fields
-            $pembayaran->payment_method = 'Transfer';
-            $pembayaran->status = 'pending';
-            $pembayaran->save();
 
-            // Redirect or respond as needed
-            return redirect()->back()->with('success', 'Upload Bukti Pembayaran Berhasil');
+            if ($user) {
+                // Determine the notification title based on the payment status
+                $title = $pembayaran->status === 'lunas' ? 'Bukti Pembayaran Valid' : ($pembayaran->status === 'gagal' ? 'Bukti Pembayaran Tidak Valid' : 'Pembayaran Diperbarui');
 
-        } catch (Exception $e) {
-            // Handle exception and return error response
-            return redirect()->back()->with('error', 'Failed to update pembayaran: ' . $e->getMessage());
+                // Prepare notification data
+                $data = [
+                    'nama_berkas' => 'Pendaftaran', // Adjust as needed
+                    'status' => $pembayaran->status,
+                    'title' => $title,
+                    'message' => 'Status Pembayaran telah diperbarui.',
+                ];
+
+                // Send notification
+                Notification::send($user, new ValidasiSelesaiNotification($data));
+            }
+
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Pembayaran Berhasil Di Perbarui');
+        } catch (\Throwable $e) {
+            // Redirect back with error message in case of exception
+            return redirect()->back()->with('error', 'Gagal Memperbarui Pembayaran: ' . $e->getMessage());
         }
     }
+
+
+    public function uploadsiswa(ValidateUploadBukti $request)
+    {
+        try {
+            $validatedData = $request->validated();
+
+            DB::beginTransaction();
+            $tahunAjaran = TahunAjaran::active()->firstOrFail();
+            $gelombang = Gelombang::current();
+
+            // 1️⃣ BUAT PENDAFTARAN DULU
+            $pendaftaran = Pendaftaran::create([
+                'tahun_ajaran_id' => $tahunAjaran->id,
+                'gelombang_id' => $gelombang->id,
+                'nomor_registrasi' => Pendaftaran::generateNoPendaftaran(
+                    $tahunAjaran->id,
+                    $gelombang->id
+                ),
+                'status' => 'pending',
+                'user_id' => Auth::id(),
+                'calon_siswa_id' => null,
+            ]);
+
+            // 2️⃣ UPLOAD FILE
+            $filePath = null;
+
+            if ($request->hasFile('file_path')) {
+
+                $file = $request->file('file_path');
+
+                $extension = $file->getClientOriginalExtension();
+
+                $fileName = 'bukti-transfer-'
+                    . $pendaftaran->nomor_registrasi
+                    . '-' . time()
+                    . '.' . $extension;
+
+                $filePath = $file->storeAs(
+                    'berkas_siswa',
+                    $fileName,
+                    'public'
+                );
+            }
+
+            // 3️⃣ SIMPAN PEMBAYARAN (TERHUBUNG KE PENDAFTARAN)
+            Pembayaran::create([
+                'pendaftaran_id' => $pendaftaran->id,
+                'payment_method' => 'Transfer',
+                'amount' => $validatedData['amount'],
+                'status' => 'pending',
+                'payment_date' => Date::now(),
+                'file_path' => $filePath,
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', 'Pembayaran berhasil dikirim, menunggu verifikasi');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with(
+                'error',
+                'Gagal upload pembayaran: ' . $e->getMessage()
+            );
+        }
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */

@@ -21,7 +21,7 @@
                     </div>
                 @else
                     <div class="alert alert-success text-center">
-                        <i class="mdi mdi-check-outline"></i> Berkas Persyaratan Sudah Valid, Silahkan Bayar Pendaftaran
+                        <i class="mdi mdi-check-outline"></i> Berkas Persyaratan Sudah Valid, Silahkan Menunggu Info Selanjutnya untuk Test & Wawancara
                         <a href="{{ route('pembayaranSiswa') }}" class="btn btn-primary"> Disini</a>
                     </div>
                 @endif

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Agama;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Ramsey\Uuid\Uuid;
 use App\Models\Ruangan;
 use App\Models\Gelombang;
@@ -19,17 +20,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CalonSiswa extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasUuids;
 
-    protected $table = 'calon_siswa_pendaftaran';
+    protected $table = 'calon_siswa';
 
     protected $fillable = [
         'nik',
+        'nisn',
         'nomor_pendaftaran',
         'nama_lengkap',
         'nama_panggilan',
+        'asal_sekolah',
         'tempat_lahir',
         'tanggal_lahir',
+        'riwayat_hafalan',
         'umur',
         'id_agama',
         'jenis_kelamin',
@@ -52,45 +56,47 @@ class CalonSiswa extends Model
         'nama_wali',
         'nomor_wali',
         'pekerjaan_wali_id',
-        'gelombang_id',
         'user_id',
-        'tahun_ajaran_id'
     ];
 
-    public static function generateNoPendaftaran()
-{
-     // Generate UUID
-     $uuid = Uuid::uuid4()->toString();
-    // Format nomor pendaftaran dengan tahun ajaran, gelombang, dan urutan
-    return "{$uuid}";
-}
 
-public function ruangan()
-{
-    return $this->belongsToMany(Ruangan::class, 'calon_siswa_id');
-}
-public function user()
-{
-    return $this->belongsTo(User::class, 'user_id');
-}
-public function tahunajaran()
+
+    public function persetujuanPernyataan()
+    {
+        return $this->hasMany(PersetujuanPernyataan::class);
+    }
+
+    public function pendaftaran()
+    {
+        return $this->hasOne(Pendaftaran::class);
+    }
+
+    public function ruangan()
+    {
+        return $this->belongsToMany(Ruangan::class, 'calon_siswa_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function tahunajaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'tahun_ajaran_id');
     }
     public function berkas()
-{
-    return $this->hasMany(BerkasSiswa::class);
-}
+    {
+        return $this->hasMany(BerkasSiswa::class);
+    }
 
-public function pembayaran()
-{
-    return $this->hasMany(Pembayaran::class);
-}
+    public function pembayaran()
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
 
-public function agama()
-{
-    return $this->belongsTo(Agama::class, 'id_agama');
-}
+    public function agama()
+    {
+        return $this->belongsTo(Agama::class, 'id_agama');
+    }
     public function pekerjaanAyah()
     {
         return $this->belongsTo(Pekerjaan::class, 'pekerjaan_ayah_id');

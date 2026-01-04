@@ -73,29 +73,36 @@
                                         @if (!empty($gelombangs) && $gelombangs->count())
                                             @foreach ($gelombangs as $gelombang)
                                                 <tr>
-                                                    <td>{{ $gelombang->gelombang }}</td>
-                                                    <td>{{ $gelombang->mulai }}</td>
-                                                    <td>{{ $gelombang->selesai }}</td>
+                                                    <td>{{ $gelombang->name}}</td>
+                                                    <td>{{ $gelombang->start_date }}</td>
+                                                    <td>{{ $gelombang->end_date }}</td>
                                                     <td>
-                                                        @if (strtotime($gelombang->selesai) >= strtotime(date('Y-m-d')) &&
-                                                                strtotime($gelombang->mulai) <= strtotime(date('Y-m-d')))
-                                                            <label class="badge badge-success">Aktif</label>
-                                                        @else
-                                                            <label class="badge badge-danger">Tidak Aktif</label>
+                                                        @if ($gelombang->status === 'open')
+                                                            <label class="badge badge-success">Buka</label>
+                                                        @elseif($gelombang->status === 'close')
+                                                            <label class="badge badge-danger">Tutup</label>
+                                                            @else
+                                                            <label class="badge badge-info ">Kuota Full</label>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @component('components.dropdown', [
                                                             'editModal' => '#editModal',
                                                             'deleteModal' => '#deleteModal',
+
                                                             'id' => $gelombang->id,
-                                                            'nama' => $gelombang->gelombang,
-                                                            'mulai' => $gelombang->mulai,
-                                                            'selesai' => $gelombang->selesai,
+                                                            'tahun_ajaran_id' => $gelombang->tahun_ajaran_id,
+                                                            'name' => $gelombang->name,
+                                                            'start_date' => $gelombang->start_date,
+                                                            'end_date' => $gelombang->end_date,
+                                                            'quota' => $gelombang->quota,
+                                                            'registration_fee' => $gelombang->registration_fee,
+                                                            'status' => $gelombang->status,
                                                         ])
                                                             Aksi
                                                         @endcomponent
                                                     </td>
+
                                                 </tr>
                                             @endforeach
                                         @else

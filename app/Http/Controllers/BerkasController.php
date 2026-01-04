@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gelombang;
 use App\Models\CalonSiswa;
 use App\Models\BerkasSiswa;
+use App\Models\Pendaftaran;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -17,29 +18,42 @@ class BerkasController extends Controller
      */
     public function index(Request $request)
 {
-    $query = CalonSiswa::query();
-    $tahunAjaranList = TahunAjaran::get();
+        $tahunAjaranList = TahunAjaran::all();
+        $activeTahunAjaran = TahunAjaran::current();
 
-    // Cari berdasarkan gelombang
-    $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
+        // default aman
+        $tahunAjaranId = null;
+        $siswa = collect();
 
-    if ($activeTahunAjaran) {
-        $tahunAjaranId = $request->input('tahun_ajaran_id', TahunAjaran::where('id', $activeTahunAjaran->id)->value('id'));
-        $query->where('tahun_ajaran_id', $tahunAjaranId);
-    } else {
-
-        return view('pages.validasi', compact('tahunAjaranList'))->withErrors('Tidak ada tahun ajaran aktif.');
+        if (!$activeTahunAjaran) {
+            return view('pages.validasi', compact(
+                'siswa',
+                'tahunAjaranList',
+                'tahunAjaranId'
+            ))->withErrors('Tidak ada tahun ajaran aktif.');
     }
 
-    // Cari berdasarkan nama
-    if ($request->filled('nama')) {
-        $query->where('nama_lengkap', 'like', '%' . $request->input('nama') . '%');
-    }
+        $tahunAjaranId = $request->input(
+            'tahun_ajaran_id',
+            $activeTahunAjaran->id
+        );
 
-    $siswa = $query->paginate(5);
+        $siswa = CalonSiswa::with(['berkas', 'pendaftaran'])
+            ->whereHas('pendaftaran', function ($q) use ($tahunAjaranId) {
+                $q->where('tahun_ajaran_id', $tahunAjaranId);
+            })
+            ->when($request->filled('nama'), function ($q) use ($request) {
+                $q->where('nama_lengkap', 'like', '%' . $request->nama . '%');
+            })
+            ->paginate(5);
 
-    return view('pages.validasi', compact('siswa', 'tahunAjaranList', 'tahunAjaranId'));
+        return view('pages.validasi', compact(
+            'siswa',
+            'tahunAjaranList',
+            'tahunAjaranId'
+        ));
 }
+
 
 
     /**

@@ -12,15 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pembayaran', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('payment_method');
             $table->decimal('amount', 10, 2)->nullable();
             $table->timestamp('payment_date')->useCurrent();
-            $table->string('transaction_id')->unique();
+            $table->foreignUuid('pendaftaran_id');
             $table->enum('status', ['belum_lunas', 'lunas', 'gagal', 'pending']);
             $table->string('file_path')->nullable();
             $table->timestamps();
-            $table->foreignId('calon_siswa_id');
         });
     }
 

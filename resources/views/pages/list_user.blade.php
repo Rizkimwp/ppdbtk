@@ -6,7 +6,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <span class="page-title-icon bg-gradient-primary me-2 text-white">
                     <i class="mdi mdi-human"></i>
                 </span> List User
             </h3>
@@ -81,7 +81,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if (isset($user) && $user->count() > 0)
-                                <table class="table table-hover">
+                                <table class="table-hover table">
                                     <thead>
                                         <tr>
                                             <th>Username</th>
@@ -189,10 +189,11 @@
                     const email = this.getAttribute('data-email');
                     const hak = this.getAttribute('data-hak');
 
-                    console.log(nama, username);
                     // Set form action
+                    let urlTemplate = "{{ route('user.update', ':id') }}";
+                    let url = urlTemplate.replace(':id', id);
                     const form = document.getElementById('editForm');
-                    form.action = `/user/${id}`;
+                    form.action = url;
 
                     // Fill form inputs
                     document.getElementById('edit_name').value = nama;

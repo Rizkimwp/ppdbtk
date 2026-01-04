@@ -26,32 +26,57 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <form action="{{ route('pembayaran.index') }}" method="GET">
-                                    <div class="form-group">
+                                    <div class="row g-2 align-items-end">
 
-                                        <select name="tahun_ajaran_id" id="tahun_ajaran_id"
-                                            class="form-select form-select-lg">
-                                            @foreach ($tahunAjaranList as $tahunAjaran)
-                                                <option value="{{ $tahunAjaran->id }}"
-                                                    {{ $tahunAjaranId == $tahunAjaran->id ? 'selected' : '' }}>
-                                                    {{ $tahunAjaran->tahun_ajaran }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        {{-- FILTER TAHUN --}}
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Tahun</label>
+                                            <select name="tahun" class="form-select">
+                                                <option value="">Semua Tahun</option>
+                                                @for ($y = now()->year; $y >= now()->year - 5; $y--)
+                                                    <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>
+                                                        {{ $y }}
+                                                    </option>
+                                                @endfor
+                                            </select>
+                                        </div>
+
+                                        {{-- FILTER BULAN --}}
+                                        <div class="col-md-3">
+                                            <label class="form-label fw-bold">Bulan</label>
+                                            <select name="bulan" class="form-select">
+                                                <option value="">Semua Bulan</option>
+                                                @for ($m = 1; $m <= 12; $m++)
+                                                    <option value="{{ $m }}" {{ request('bulan') == $m ? 'selected' : '' }}>
+                                                        {{ DateTime::createFromFormat('!m', $m)->format('F') }}
+                                                    </option>
+                                                @endfor
+                                            </select>
+                                        </div>
+
+                                        {{-- CARI NAMA --}}
+                                        <div class="col-md-4">
+                                            <label class="form-label fw-bold">Nama Siswa</label>
+                                            <input
+                                                type="text"
+                                                name="nama"
+                                                class="form-control"
+                                                placeholder="Cari nama siswa"
+                                                value="{{ request('nama') }}"
+                                            >
+                                        </div>
+
+                                        {{-- BUTTON --}}
+                                        <div class="col-md-2 d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="mdi mdi-magnify"></i> Cari
+                                            </button>
+                                        </div>
+
                                     </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="form-group">
-
-                                    <input type="text" name="nama" id="nama" class="form-control"
-                                        value="{{ request()->input('nama') }}" placeholder="Pencarian">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <button type="submit" class="btn btn-primary">Cari</button>
-                            </div>
-                            </form>
+                                </form>
                         </div>
                     </div>
                 </div>
@@ -76,8 +101,8 @@
                                     @if (!$pembayaran->isEmpty())
                                         @foreach ($pembayaran as $item)
                                             <tr>
-                                                <td>{{ $item->calonsiswa->nama_lengkap }}</td>
-                                                <td>{{ $item->calonsiswa->telepon }}</td>
+                                                <td>{{ $item->pendaftaran->user->name }}</td>
+                                                <td>{{ $item->pendaftaran->user->phone }}</td>
                                                 <td>
                                                     @if ($item->status === 'lunas')
                                                         <label class="badge badge-success">LUNAS</label>
@@ -90,14 +115,26 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-success btn-sm btn-cek"
-                                                        data-bs-toggle="modal" data-bs-target="#cekModal"
-                                                        data-metode="{{ $item->payment_method }}"
-                                                        data-id="{{ $item->id }}" data-file="{{ $item->file_path }}"
-                                                        data-nama="{{ $item->calonsiswa->nama_lengkap }}">
-                                                        <i class="mdi mdi-eye btn-icon-prepend"></i> CEK PEMBAYARAN
-                                                    </button>
+                                                    @if ($item->status === 'lunas')
+                                                    <a href={{ $item->file_path }} class="btn btn-info btn-sm"  target="_blank"> <i
+                                                        class="mdi mdi-eye"></i>LIHAT</a>
+                                                    @else
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-warning btn-sm btn-cek"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#cekModal"
+                                                            data-metode="{{ $item->payment_method }}"
+                                                            data-id="{{ $item->id }}"
+                                                            data-file="{{ $item->file_path }}"
+                                                            data-nama="{{ $item->pendaftaran->user->name }}"
+                                                        >
+                                                            <i class="mdi mdi-eye btn-icon-prepend"></i>
+                                                            CEK PEMBAYARAN
+                                                        </button>
+                                                    @endif
                                                 </td>
+
                                             </tr>
                                         @endforeach
                                     @else

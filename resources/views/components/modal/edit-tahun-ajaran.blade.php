@@ -85,8 +85,10 @@
 
 
                 // Set form action
+                let urlTemplate = "{{ route('tahun-ajaran.update', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('editForm');
-                form.action = `/tahun-ajaran/${id}`;
+                form.action = url;
 
                 // Fill form inputs
                 document.getElementById('edit_tahun_ajaran').value = nama;

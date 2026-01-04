@@ -75,8 +75,10 @@
 
 
                 // Set form action
+                let urlTemplate = "{{ route('list-berkas.update', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('editForm');
-                form.action = `/list-berkas/${id}`;
+                form.action = url;
 
                 // Fill form inputs
                 document.getElementById('edit_nama_berkas').value = nama;

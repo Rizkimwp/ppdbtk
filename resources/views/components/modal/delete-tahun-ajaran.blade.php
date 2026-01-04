@@ -31,8 +31,10 @@
                 const nama = this.getAttribute('data-nama');
 
                 // Set form action
+                let urlTemplate = "{{ route('tahun-ajaran.destroy', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('deleteForm');
-                form.action = `/tahun-ajaran/${id}`;
+                form.action = url;
 
                 // Fill form inputs
                 document.getElementById('nama').textContent = nama;

@@ -59,8 +59,10 @@
 
 
                 // Set form action
+                let urlTemplate = "{{ route('pernyataan.update', ':id') }}";
+                let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('cekForm');
-                form.action = `/pembayaran/${id}`;
+                form.action = url;
 
                 // Update method pembayaran
                 document.getElementById('method_pembayaran').textContent = metode;

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCalonSiswaRequest;
+use App\Models\Pendaftaran;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Agama;
+use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 use App\Models\Gelombang;
 use App\Models\Pekerjaan;
@@ -28,181 +31,224 @@ class SiswaController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $query = CalonSiswa::query();
-    $tahunAjaranList = TahunAjaran::get();
+    {
+        $tahunAjaranList = TahunAjaran::all();
+        $activeTahunAjaran = TahunAjaran::current();
 
-    // Cari berdasarkan gelombang
-    $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
+        // ✅ DEFINISIKAN DARI AWAL
+        $tahunAjaranId = null;
 
-    if ($activeTahunAjaran) {
-        $tahunAjaranId = $request->input('tahun_ajaran_id', TahunAjaran::where('id', $activeTahunAjaran->id)->value('id'));
-        $query->where('tahun_ajaran_id', $tahunAjaranId);
-    } else {
+        if (!$activeTahunAjaran) {
+            return view('pages.siswa', compact(
+                'tahunAjaranList',
+                'tahunAjaranId'
+            ))->withErrors('Tidak ada tahun ajaran aktif.');
+        }
 
-        return view('pages.siswa', compact('tahunAjaranList'))->withErrors('Tidak ada tahun ajaran aktif.');
+        // Ambil tahun ajaran (fallback ke aktif)
+        $tahunAjaranId = $request->input('tahun_ajaran_id');
+
+        if (
+            empty($tahunAjaranId) ||
+            !TahunAjaran::where('id', $tahunAjaranId)->exists()
+        ) {
+            $tahunAjaranId = $activeTahunAjaran->id;
+        }
+
+        $siswa = CalonSiswa::with([
+            'agama',
+            'pendaftaran.tahunAjaran'
+        ])
+            ->whereHas('pendaftaran', function ($q) use ($tahunAjaranId) {
+                $q->where('tahun_ajaran_id', $tahunAjaranId);
+            })
+            ->when($request->filled('nama'), function ($q) use ($request) {
+                $q->where('nama_lengkap', 'like', '%' . $request->nama . '%');
+            })
+            ->paginate(5)
+            ->withQueryString();
+
+        return view('pages.siswa', compact(
+            'siswa',
+            'tahunAjaranList',
+            'tahunAjaranId'
+        ));
     }
 
-    // Cari berdasarkan nama
-    if ($request->filled('nama')) {
-        $query->where('nama_lengkap', 'like', '%' . $request->input('nama') . '%');
-    }
 
-    $siswa = $query->paginate(5);
-
-    return view('pages.siswa', compact('siswa', 'tahunAjaranList', 'tahunAjaranId'));
-}
 
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-{
-    $currentUser = Auth::user();
-    $siswa = null;
+    {
+        $currentUser = Auth::user();
+        $siswa = null;
+        $tahunAjaran = TahunAjaran::current();
+        $gelombang = Gelombang::current();
 
-    if ($currentUser && $currentUser->calonSiswa) {
-        $siswa = CalonSiswa::where('id', $currentUser->calonSiswa->id)->first();
+
+        if ($currentUser && $currentUser->calonSiswa) {
+            $siswa = CalonSiswa::where('id', $currentUser->calonSiswa->id)->first();
+        }
+
+        // Periksa jika calonSiswa ada sebelum mengakses id-nya
+        if ($currentUser && $currentUser->calonSiswa) {
+            $berkasTidakValid = BerkasSiswa::where('status', 'TIDAK_VALID')
+                ->where('calon_siswa_id', $currentUser->calonSiswa->id)
+                ->get();
+        } else {
+            $berkasTidakValid = collect(); // Mengembalikan koleksi kosong jika calonSiswa tidak ada
+        }
+
+        $pendaftaran = Pendaftaran::where('user_id', auth()->id())->first();
+
+        $hasPaid = false;
+
+        if ($pendaftaran) {
+            $hasPaid = Pembayaran::where('pendaftaran_id', $pendaftaran->id)
+                ->where('status', 'lunas')
+                ->exists();
+        }
+
+        $hasOpen = $tahunAjaran && $gelombang;
+        $listBerkas = ListBerkas::where('aktif', 1)->get();
+        $agama = Agama::all();
+        $pendidikan = Pendidikan::all();
+        $pekerjaan = Pekerjaan::all();
+        $penghasilan = Penghasilan::all();
+
+        // Kembalikan tampilan dengan data
+        return view('pages.pendaftaran', compact('hasOpen', 'hasPaid', 'listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan', 'siswa', 'berkasTidakValid'));
     }
-
-    // Periksa jika calonSiswa ada sebelum mengakses id-nya
-    if ($currentUser && $currentUser->calonSiswa) {
-        $berkasTidakValid = BerkasSiswa::where('status', 'TIDAK_VALID')
-            ->where('calon_siswa_id', $currentUser->calonSiswa->id)
-            ->get();
-    } else {
-        $berkasTidakValid = collect(); // Mengembalikan koleksi kosong jika calonSiswa tidak ada
-    }
-
-    // Data lainnya
-    $listBerkas = ListBerkas::where('aktif', 1)->get();
-    $agama = Agama::all();
-    $pendidikan = Pendidikan::all();
-    $pekerjaan = Pekerjaan::all();
-    $penghasilan = Penghasilan::all();
-
-    // Kembalikan tampilan dengan data
-    return view('pages.pendaftaran', compact('listBerkas', 'agama', 'penghasilan', 'pendidikan', 'pekerjaan', 'siswa', 'berkasTidakValid'));
-}
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCalonSiswaRequest $request)
     {
-        $validator = $request->validate([
-            'nik' => 'required|string|max:16',
-            'nama_lengkap' => 'required|string|max:255',
-            'nama_panggilan' => 'required|string|max:50',
-            'tanggal_lahir' => 'required|date',
-            'tempat_lahir' => 'required|string|max:255',
-            'umur' => 'required|string',
-            'id_agama' => 'required|integer',
-            'jenis_kelamin' => 'required|string',
-            'alamat' => 'required|string|max:255',
-            'telepon' => 'required|string|max:15',
-            'email' => 'required|email|max:255',
-            'tinggi_badan' => 'required|string',
-            'berat_badan' => 'required|string',
-            'anak_ke' => 'required|string|min:1',
-            'status_dalam_keluarga' => 'required|string|max:50',
-            'nama_ayah' => 'required|string|max:255',
-            'pekerjaan_ayah_id' => 'required|integer',
-            'pendidikan_ayah_id' => 'required|integer',
-            'nama_ibu' => 'required|string|max:255',
-            'pekerjaan_ibu_id' => 'required|integer',
-            'pendidikan_ibu_id' => 'required|integer',
-            'penghasilan_orang_tua_id' => 'required|integer',
-            'nama_wali' => 'nullable|string|max:255',
-            'nomor_wali' => 'nullable|string|max:15',
-            'pekerjaan_wali_id' => 'nullable|integer',
-            'tahun_lahir_ayah' => 'required',
-            'tahun_lahir_ibu' => 'required',
-        ]);
-
+        DB::beginTransaction();
         try {
-            $tahun = TahunAjaran::where('status', 'aktif')
-            ->whereDate('mulai', '<=', Carbon::now())
-            ->whereDate('selesai', '>=', Carbon::now())
-            ->first();
-
-        if (!$tahun) {
-            return back()->with('error', 'Tidak ada tahun ajaran tersedia untuk tanggal sekarang.');
-        }
-            // Ambil tahun ajaran dan gelombang
-            $tahunAjaranId = $tahun->id; // Ambil nama tahun ajaran pertama
-            $noPendaftaran = CalonSiswa::generateNoPendaftaran();
-
-            // Dapatkan pengguna yang sedang login
+            $gelombang = Gelombang::current();
+            $data = $request->validated();
             $currentUser = Auth::user();
-            $userId = null;
 
-            if ($currentUser->role === 'siswa') {
-                // Jika perannya siswa, gunakan user_id dari pengguna yang sedang login
-                $userId = $currentUser->id;
-            } elseif (in_array($currentUser->role, ['admin', 'super_admin'])) {
-                // Jika perannya admin atau super_admin, buat pengguna baru
-                $newUser = User::create([
-                    'username' => $validator['nik'],
-                    'name' => $validator['nama_lengkap'],
-                    'email' => $validator['email'],
-                    'password' => Hash::make('12345678'),
+            if (!$currentUser) {
+                return back()->withErrors(['auth' => 'Tidak terautentikasi']);
+            }
+
+            // ===============================
+            // ADMIN / SUPER ADMIN
+            // ===============================
+            if (in_array($currentUser->role, ['admin', 'super_admin'])) {
+
+                // 1️⃣ BUAT USER BARU
+                $user = User::create([
+                    'username' => $data['nisn'],
+                    'name' => $data['nama_lengkap'],
+                    'email' => $data['email'],
+                    'phone' => $data['telepon'],
+                    'password' => Hash::make($data['nisn']),
                     'role' => 'siswa',
                 ]);
 
-                $userId = $newUser->id;
-            } else {
-                // Jika perannya tidak sesuai, kembalikan respon error
-                return redirect()->back()->withErrors(['role' => 'Invalid role.']);
+                // 2️⃣ CALON SISWA
+                $calonSiswa = CalonSiswa::create(array_merge($data, [
+                    'user_id' => $user->id,
+                ]));
+
+                // 3️⃣ PENDAFTARAN
+                $pendaftaran = Pendaftaran::create([
+                    'user_id' => $user->id,
+                    'calon_siswa_id' => $calonSiswa->id,
+                    'tahun_ajaran_id' => TahunAjaran::current()->id,
+                    'gelombang_id' => Gelombang::current()?->id,
+                    'nomor_registrasi' => Pendaftaran::generateNoPendaftaran(
+                        TahunAjaran::current()->id,
+                        $gelombang->id
+                    ),
+                    'status' => 'DAFTAR',
+                ]);
+
+                // 4️⃣ PEMBAYARAN (AUTO LUNAS)
+                Pembayaran::create([
+                    'pendaftaran_id' => $pendaftaran->id,
+                    'payment_method' => 'cash',
+                    'amount' => $gelombang->registration_fee, // atau biaya formulir
+                    'status' => 'LUNAS',
+                    'payment_date' => now(),
+                ]);
+
+                // 5️⃣ BERKAS → AUTO VALID
+                $this->handleBerkasUpload($request, $calonSiswa, 'VALID');
+
+            }
+            // ===============================
+            // SISWA ISI SENDIRI
+            // ===============================
+            else {
+
+                // Ambil pendaftaran milik siswa
+                $pendaftaran = Pendaftaran::where('user_id', $currentUser->id)
+                    ->firstOrFail();
+
+                // Update / buat calon siswa
+                $calonSiswa = CalonSiswa::updateOrCreate(
+                    ['user_id' => $currentUser->id],
+                    $data
+                );
+
+                // Update pendaftaran
+                $pendaftaran->update([
+                    'calon_siswa_id' => $calonSiswa->id
+                ]);
+
+                // Berkas → PERIKSA
+                $this->handleBerkasUpload($request, $calonSiswa, 'PERIKSA');
             }
 
-            // Simpan data calon siswa
-            $calonSiswa = new CalonSiswa($validator);
-            $calonSiswa->nomor_pendaftaran = $noPendaftaran;
-            $calonSiswa->tahun_ajaran_id = $tahunAjaranId;
-            $calonSiswa->user_id = $userId;
-            $calonSiswa->save();
+            DB::commit();
 
-            // Handle file uploads for documents (BerkasSiswa)
-            $this->handleBerkasUpload($request, $calonSiswa);
-            $uuid = Uuid::uuid4()->toString();
-            $pembayaran = new Pembayaran();
-            $pembayaran->payment_method = '';
-            $pembayaran->status = 'belum_lunas'; // Or any default status you want
-            $pembayaran->transaction_id = $uuid; // Update this with actual transaction ID if available
-            $pembayaran->calon_siswa_id = $calonSiswa->id;
-            $pembayaran->save();
+            return back()->with('success', 'Pendaftaran siswa berhasil diproses.');
 
-            Session::flash('success', 'Data siswa berhasil ditambahkan.');
-
-            return redirect()->route('calon-siswa.create');
-        } catch (\Exception $e) {
-            // Tangani kesalahan jika terjadi
-            return redirect()->back()->with('error', 'Terjadi Kesalahan: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
         }
     }
 
 
 
 
+    protected function handleBerkasUpload(
+        Request $request,
+        CalonSiswa $calonSiswa,
+        string $defaultStatus = 'PERIKSA'
+    ) {
+        $listBerkasIds = ListBerkas::where('aktif', true)->pluck('id');
 
-protected function handleBerkasUpload(Request $request, CalonSiswa $calonSiswa)
-{
-    $listBerkasIds = ListBerkas::where('aktif', true)->pluck('id');
+        foreach ($listBerkasIds as $listBerkasId) {
+            $fileInputName = 'file_berkas_' . $listBerkasId;
 
-    foreach ($listBerkasIds as $listBerkasId) {
-        $fileInputName = 'file_berkas_' . $listBerkasId;
+            if ($request->hasFile($fileInputName)) {
 
-        if ($request->hasFile($fileInputName)) {
-            $berkas = new BerkasSiswa();
-            $berkas->calon_siswa_id = $calonSiswa->id;
-            $berkas->list_berkas_id = $listBerkasId;
-            $berkas->uploadFile($request->file($fileInputName));
+                $file = $request->file($fileInputName);
+
+                BerkasSiswa::updateOrCreate(
+                    [
+                        'calon_siswa_id' => $calonSiswa->id,
+                        'list_berkas_id' => $listBerkasId,
+                    ],
+                    [
+                        'file_path' => $file->store('berkas'),
+                        'status' => $defaultStatus,
+                    ]
+                );
+            }
         }
     }
-}
 
     /**
      * Display the specified resource.
@@ -250,26 +296,26 @@ protected function handleBerkasUpload(Request $request, CalonSiswa $calonSiswa)
 
 
 
-public function readNotifikasi(string $id)
-{
-    try {
-        // Temukan notifikasi berdasarkan ID-nya
-        $notification = Notification::findOrFail($id);
+    public function readNotifikasi(string $id)
+    {
+        try {
+            // Temukan notifikasi berdasarkan ID-nya
+            $notification = Notification::findOrFail($id);
 
-        // Tandai notifikasi sebagai sudah dibaca dengan memperbarui timestamp read_at
-        $notification->read_at = now();
-        $notification->save();
+            // Tandai notifikasi sebagai sudah dibaca dengan memperbarui timestamp read_at
+            $notification->read_at = now();
+            $notification->save();
 
-        // Redirect ke rute calon-siswa.create dengan pesan sukses
-        return redirect()->route('calon-siswa.create')->with('success', 'Notifikasi sudah dibaca');
-    } catch (Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        // Redirect kembali dengan pesan error jika notifikasi tidak ditemukan
-        return redirect()->route('calon-siswa.create')->with('error', 'Notification not found.')->withErrors(['error' => $e->getMessage()]);
-    } catch (\Exception $e) {
-        // Redirect kembali dengan pesan error jika terjadi kesalahan
-        return redirect()->route('calon-siswa.create')->with('error', 'An error occurred while marking the notification as read.')->withErrors(['error' => $e->getMessage()]);
+            // Redirect ke rute calon-siswa.create dengan pesan sukses
+            return redirect()->route('calon-siswa.create')->with('success', 'Notifikasi sudah dibaca');
+        } catch (Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Redirect kembali dengan pesan error jika notifikasi tidak ditemukan
+            return redirect()->route('calon-siswa.create')->with('error', 'Notification not found.')->withErrors(['error' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            // Redirect kembali dengan pesan error jika terjadi kesalahan
+            return redirect()->route('calon-siswa.create')->with('error', 'An error occurred while marking the notification as read.')->withErrors(['error' => $e->getMessage()]);
+        }
     }
-}
 
 
 }

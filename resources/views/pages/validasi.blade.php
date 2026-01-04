@@ -6,7 +6,7 @@
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title">
-                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                <span class="page-title-icon bg-gradient-primary me-2 text-white">
                     <i class="mdi mdi-receipt-text-check"></i>
                 </span> Validasi Berkas Siswa
             </h3>
@@ -57,22 +57,22 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table-hover table">
                                 <thead>
                                     <tr>
                                         <th>Nama Siswa</th>
-                                        <th>Umur</th>
+                                        <th>Nama Ayah/Wali</th>
                                         <th>Nomor Telepon</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (!$siswa->isEmpty())
+                                    @if (isset($siswa) && $siswa->count())
                                         @foreach ($siswa as $item)
                                             <tr>
                                                 <td>{{ $item->nama_lengkap }}</td>
-                                                <td>{{ $item->umur }}</td>
+                                                <td>{{ $item->nama_ayah }}</td>
                                                 <td>{{ $item->telepon }}</td>
                                                 @php
                                                     $countPeriksa = 0;
@@ -147,7 +147,11 @@
                     </div>
                     <div class="card-footer">
                         <div class="pagination justify-content-end">
-                            {{ $siswa->links('vendor.pagination.custom') }}
+                            @if (method_exists($siswa, 'links'))
+                                {{ $siswa->links('vendor.pagination.custom') }}
+                            @endif
+
+
                         </div> <!-- Menampilkan tautan pagination -->
                     </div>
                 </div>

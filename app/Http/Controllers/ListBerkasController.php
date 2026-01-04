@@ -22,23 +22,25 @@ class ListBerkasController extends Controller
     }
     public function store(Request $request)
     {
-    $request->validate([
-        'nama_berkas' => 'required|string|max:255',
-        'aktif' => 'required|boolean',
-        'wajib' => 'required|boolean',
-    ]);
+        $validated = $request->validate([
+            'nama_berkas' => 'required|string|max:255',
+            'aktif' => 'required|boolean',
+            'wajib' => 'required|boolean',
+        ]);
 
-    try {
-        $berkas = new ListBerkas();
-        $berkas->nama_berkas = $request->nama_berkas;
-        $berkas->aktif = $request->aktif;
-        $berkas->wajib = $request->wajib;
-        $berkas->save();
-    return redirect()->route('list-berkas.index')
-    ->with('success', 'Berkas berhasil ditambahkan.');
-    } catch (\Throwable $th) {
-        return redirect()->back()->with('error', 'Terjadi Kesalahan', $e -> getMessage());
-    }
+        try {
+            ListBerkas::create($validated);
+
+            return redirect()
+                ->route('list-berkas.index')
+                ->with('success', 'Berkas berhasil ditambahkan.');
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat menyimpan data.', $e->getMessage());
+        }
+
 
 }
 public function update(Request $request, $id)

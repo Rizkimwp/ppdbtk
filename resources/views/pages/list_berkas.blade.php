@@ -44,7 +44,7 @@
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Tahun Ajaran</th>
+                                        <th>Nama Berkas</th>
                                         <th>Status</th>
                                         <th>Ketetapan</th>
                                         <th>Aksi</th>

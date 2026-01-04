@@ -23,11 +23,14 @@ class RuanganController extends Controller
     $tahunAjaranId = $request->input('tahun_ajaran_id') ?: TahunAjaran::where('status', 'aktif')->first()->id;
 
     // Ambil data ruangan berdasarkan tahun ajaran
-    $ruangan = Ruangan::with('kelas')
-        ->whereHas('siswa', function($query) use ($tahunAjaranId) {
-            $query->where('tahun_ajaran_id', $tahunAjaranId);
-        })
-        ->get();
+        $ruangan = Ruangan::with(['kelas', 'siswa.pendaftaran'])
+            ->whereHas('siswa', function ($query) use ($tahunAjaranId) {
+                $query->whereHas('pendaftaran', function ($q) use ($tahunAjaranId) {
+                    $q->where('tahun_ajaran_id', $tahunAjaranId);
+                });
+            })
+            ->get();
+
 
     // Hitung jumlah siswa per kelas
     $kelasCounts = $ruangan->groupBy('kelas_id')->map(function($group) {

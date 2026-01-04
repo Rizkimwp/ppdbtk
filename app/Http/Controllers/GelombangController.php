@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreGelombangRequest;
 use App\Models\Gelombang;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
@@ -35,45 +36,18 @@ class GelombangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-{
-    $request->validate([
-       'tahun_ajaran_id' => 'required|integer',
-        'gelombang' => 'required|string',
-        'mulai' => [
-            'required',
-            'date',
-            function ($attribute, $value, $fail) use ($request) {
-                $existingGelombangs = Gelombang::where('tahun_ajaran_id', $request->tahun_ajaran_id)
-                    ->where(function ($query) use ($value) {
-                        $query->where('mulai', '<=', $value)
-                              ->where('selesai', '>=', $value);
-                    })
-                    ->exists();
-                if ($existingGelombangs) {
-                    $fail('Tanggal mulai tidak boleh bersinggungan dengan gelombang lain dalam tahun ajaran yang sama.');
-                }
-            },
-        ],
-        'selesai' => [
-            'required',
-            'date',
-            'after_or_equal:mulai',
-        ],
-    ]);
+    public function store(StoreGelombangRequest $request)
+    {
+        try {
+            Gelombang::create($request->validated());
 
-    $data = $request->only(['tahun_ajaran_id', 'gelombang', 'mulai', 'selesai']);
-
-    try {
-        // Buat data baru
-        $item = Gelombang::create($data);
-
-        return redirect()->back()->with('success', 'Data berhasil ditambahkan.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal menambahkan gelombang: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('success', 'Data gelombang berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menambahkan gelombang: ' . $e->getMessage());
+        }
     }
-}
-
 
 
     /**
