@@ -59,8 +59,8 @@
                     {{-- Biaya Pendaftaran --}}
                     <div class="mb-3">
                         <label class="form-label">Biaya Pendaftaran</label>
-                        <input type="number" id="edit_registration_fee" name="registration_fee"
-                            class="form-control" min="0" step="1000" required>
+                        <input type="text" id="edit_registration_fee" name="registration_fee"
+                            class="form-control" min="0" required>
                     </div>
 
                     {{-- Status --}}
@@ -91,36 +91,33 @@
 </div>
 
 @section('script')
-
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
-        const form = document.getElementById('editForm');
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    const form = document.getElementById('editForm');
 
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', function () {
 
-                const data = this.dataset;
-                let urlTemplate = "{{ route('gelombang.update', ':id') }}";
-                let url = urlTemplate.replace(':id', data.id);
-                // set action
-                form.action = url;
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', function () {
 
-                // isi field
-                document.getElementById('edit_tahun_ajaran_id').value = data.tahunAjaranId;
-                document.getElementById('edit_name').value = data.name;
-                document.getElementById('edit_start_date').value = data.startDate;
-                document.getElementById('edit_end_date').value = data.endDate;
-                document.getElementById('edit_quota').value = data.quota;
-                document.getElementById('edit_registration_fee').value = data.registrationFee;
-                document.getElementById('edit_status').value = data.status;
+            const data = this.dataset;
+            const url = "{{ route('gelombang.update', ':id') }}".replace(':id', data.id);
+            form.action = url;
 
-                editModal.show();
-            });
+
+            // isi field
+            document.getElementById('edit_tahun_ajaran_id').value = data.tahunAjaranId;
+            document.getElementById('edit_name').value = data.name;
+            document.getElementById('edit_start_date').value = data.startDate;
+            document.getElementById('edit_end_date').value = data.endDate;
+            document.getElementById('edit_quota').value = data.quota;
+            document.getElementById('edit_registration_fee').value = data.registrationFee;
+
+            editModal.show();
         });
-
     });
-    </script>
 
+});
+</script>
 @endsection

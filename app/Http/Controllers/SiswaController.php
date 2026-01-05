@@ -169,7 +169,7 @@ class SiswaController extends Controller
                         TahunAjaran::current()->id,
                         $gelombang->id
                     ),
-                    'status' => 'DAFTAR',
+                    'status' => 'accepted',
                 ]);
 
                 // 4️⃣ PEMBAYARAN (AUTO LUNAS)
@@ -177,7 +177,7 @@ class SiswaController extends Controller
                     'pendaftaran_id' => $pendaftaran->id,
                     'payment_method' => 'cash',
                     'amount' => $gelombang->registration_fee, // atau biaya formulir
-                    'status' => 'LUNAS',
+                    'status' => 'lunas',
                     'payment_date' => now(),
                 ]);
 
@@ -211,11 +211,14 @@ class SiswaController extends Controller
 
             DB::commit();
 
-            return back()->with('success', 'Pendaftaran siswa berhasil diproses.');
+            return redirect()->back()->with('success', 'Pendaftaran siswa berhasil diproses.');
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->with('error', $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput() // ⭐ INI KUNCI UTAMA
+                ->with('error', $e->getMessage());
         }
     }
 
@@ -242,7 +245,7 @@ class SiswaController extends Controller
                         'list_berkas_id' => $listBerkasId,
                     ],
                     [
-                        'file_path' => $file->store('berkas'),
+                        'file_path' => $file->store('public/berkas_siswa'),
                         'status' => $defaultStatus,
                     ]
                 );

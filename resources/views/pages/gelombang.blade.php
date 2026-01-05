@@ -22,6 +22,23 @@
         <div class="row">
             <div class="col-12 grid-margin">
                 <div class="card">
+                    @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 col-md-10 mb-3 mb-md-0">
@@ -114,23 +131,7 @@
                                             </tr>
                                         @endif
                                     @endif
-                                    @if (session('success'))
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            {{ session('success') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
 
-                                    @if (session('error'))
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            {{ session('error') }}
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -143,7 +144,6 @@
     </div>
 
     @include('components.modal.create-gelombang')
-    <!-- Edit Modal -->
     @include('components.modal.edit-gelombang')
     @include('components.modal.delete-gelombang')
 

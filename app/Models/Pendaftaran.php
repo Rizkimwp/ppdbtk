@@ -22,8 +22,8 @@ class Pendaftaran extends Model
      */
 
      public static function generateNoPendaftaran(
-        int $tahunAjaranId,
-        int $gelombangId
+        string $tahunAjaranId,
+        string $gelombangId
     ): string {
         return DB::transaction(function () use ($tahunAjaranId, $gelombangId) {
 

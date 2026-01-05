@@ -363,7 +363,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group row">
-                                    <a class="btn btn-primary btn-lg"
+                                    <a class="btn btn-primary btn-lg" target="_blank"
                                         href="/{{ $item->file_path }}">{{ $item->listBerkas->nama_berkas }}</a>
 
                                 </div>

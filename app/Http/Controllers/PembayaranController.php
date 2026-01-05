@@ -275,6 +275,62 @@ class PembayaranController extends Controller
     }
 
 
+    public function uploadUlangPembayaran(ValidateUploadBukti $request)
+    {
+        try {
+            $validatedData = $request->validated();
+
+            // Ambil pendaftaran terbaru user
+            $pendaftaran = Pendaftaran::where('user_id', Auth::id())
+                ->whereHas('pembayaran', function ($q) {
+                    $q->where('status', 'gagal'); // hanya yang gagal
+                })
+                ->latest()
+                ->firstOrFail();
+
+            // Ambil pembayaran terkait
+            $pembayaran = $pendaftaran->pembayaran()->where('status', 'gagal')->firstOrFail();
+
+            DB::beginTransaction();
+
+            // 1️⃣ Upload file baru
+            if ($request->hasFile('file_path')) {
+
+                // Hapus file lama jika ada
+                if ($pembayaran->file_path && \Storage::disk('public')->exists($pembayaran->file_path)) {
+                    \Storage::disk('public')->delete($pembayaran->file_path);
+                }
+
+                $file = $request->file('file_path');
+                $extension = $file->getClientOriginalExtension();
+                $fileName = 'bukti-transfer-' . $pendaftaran->nomor_registrasi . '-' . time() . '.' . $extension;
+
+                $filePath = $file->storeAs('berkas_siswa', $fileName, 'public');
+
+                // 2️⃣ Update pembayaran
+                $pembayaran->update([
+                    'file_path' => $filePath,
+                    'status' => 'pending', // reset ke pending
+                    'payment_date' => now(),
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->back()
+                ->with('success', 'Bukti pembayaran berhasil diupload ulang, menunggu verifikasi admin.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with(
+                'error',
+                'Gagal upload ulang pembayaran: ' . $e->getMessage()
+            );
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */

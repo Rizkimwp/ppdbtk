@@ -59,7 +59,7 @@
 
 
                 // Set form action
-                let urlTemplate = "{{ route('pernyataan.update', ':id') }}";
+                let urlTemplate = "{{ route('pembayaran.update', ':id') }}";
                 let url = urlTemplate.replace(':id', id);
                 const form = document.getElementById('cekForm');
                 form.action = url;

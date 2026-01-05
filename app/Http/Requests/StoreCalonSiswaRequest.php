@@ -22,9 +22,8 @@ class StoreCalonSiswaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nik' => 'required|string|size:16|unique:calon_siswa,nik',
-            'nisn' => 'required|string|size:10|unique:calon_siswa,nisn',
-
+            'nik' => 'required|string|max:16|unique:calon_siswa,nik',
+            'nisn' => 'required|string|max:14|unique:calon_siswa,nisn',
             'nama_lengkap' => 'required|string|max:255',
             'nama_panggilan' => 'required|string|max:50',
 
@@ -36,7 +35,7 @@ class StoreCalonSiswaRequest extends FormRequest
             'umur' => 'required|integer|min:1',
 
             'id_agama' => 'required|exists:agama,id',
-            'jenis_kelamin' => 'required|in:L,P',
+            'jenis_kelamin' => 'required|in:laki_laki,perempuan',
 
             'alamat' => 'required|string|max:255',
             'telepon' => 'required|string|max:15',

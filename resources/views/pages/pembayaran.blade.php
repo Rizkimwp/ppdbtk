@@ -116,8 +116,12 @@
                                                 </td>
                                                 <td>
                                                     @if ($item->status === 'lunas')
+                                                    @if ($item->payment_method === 'cash')
+                                                    <a  class="btn btn-info btn-sm">Pembayaran Cash</a>
+                                                    @else
                                                     <a href={{ $item->file_path }} class="btn btn-info btn-sm"  target="_blank"> <i
                                                         class="mdi mdi-eye"></i>LIHAT</a>
+                                                    @endif
                                                     @else
                                                         <button
                                                             type="button"

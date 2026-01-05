@@ -38,6 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource('calon-siswa', SiswaController::class);
     Route::get('pembayaran-siswa', [PembayaranController::class, 'pembayaranSiswa'])->name('pembayaranSiswa');
     Route::post('uploadbukti', [PembayaranController::class, 'uploadsiswa'])->name('uploadbukti');
+    Route::post('uploadUlangBukti', [PembayaranController::class, 'uploadUlangPembayaran'])->name('uploadUlangPembayaran');
     Route::get('/notifications', [SiswaController::class, 'getNotifications']);
     Route::get('/notifications/read/{id}', [SiswaController::class, 'readNotifikasi'])->name('notifications.read');
     Route::post('/berkas/upload-ulang/{id}', [BerkasController::class, 'uploadUlang'])->name('berkas.upload_ulang');
@@ -53,14 +54,26 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
         Route::delete('/{pernyataan}', [PernyataanController::class, 'destroy'])->name('pernyataan.destroy');
     });
 
+
+    Route::prefix('gelombang')->name('gelombang.')->group(function () {
+        // List semua gelombang
+        Route::get('/', [GelombangController::class, 'index'])->name('index');
+        // Simpan data baru
+        Route::post('/', [GelombangController::class, 'store'])->name('store');
+        // Update gelombang
+        Route::put('/{id}', [GelombangController::class, 'update'])->name('update');
+        // Hapus gelombang
+        Route::delete('/{id}', [GelombangController::class, 'destroy'])->name('destroy');
+
+    });
+
     Route::get('/dashboard-admin', [DashboardController::class, 'admin'])->name('dashboard-admin');
     Route::post('change-password/{id}', [UserController::class, 'changePassword'])->name('user.change_password');
     Route::resource('tahun-ajaran', TahunController::class);
-    Route::resource('gelombang', GelombangController::class);
+
     Route::resource('kelas', KelasController::class);
     Route::resource('ruangan', RuanganController::class);
     Route::get('/generate-ruang-pdf', [RuanganController::class, 'generateRuang'])->name('cetakcalonsiswa');
-    // Route::resource('gelombang', GelombangController::class);
     Route::resource('list-berkas', ListBerkasController::class);
     Route::put('validasi-berkas/{id}', [BerkasController::class, 'update'])->name('validasi-berkas.update');
     Route::get('validasi-berkas', [BerkasController::class, 'index'])->name('validasi-berkas.index');

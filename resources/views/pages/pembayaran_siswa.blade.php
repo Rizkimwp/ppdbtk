@@ -20,22 +20,21 @@
                 {{-- ANIMASI LOTTIE --}}
                 <div class="col-12 mb-3">
                     <div class="card shadow-sm">
-                        <div class="card-body d-flex flex-column align-items-center justify-content-center text-center py-5">
+                        <div class="card-body d-flex flex-column align-items-center justify-content-center py-5 text-center">
 
                             <div id="lottie-animation" style="width: 280px; height: 280px;"></div>
 
-                            <h4 class="mt-4 fw-semibold">
+                            <h4 class="fw-semibold mt-4">
                                 Belum Ada Tahun Ajaran / Gelombang Yang Aktif
                             </h4>
 
-                            <p class="text-muted mt-2 mb-0">
+                            <p class="text-muted mb-0 mt-2">
                                 Silakan hubungi admin atau tunggu pengumuman pembukaan PPDB.
                             </p>
 
                         </div>
                     </div>
                 </div>
-
             @else
                 {{-- INFO REKENING --}}
                 <div class="col-lg-4">
@@ -59,99 +58,58 @@
                             <div class="show collapse" id="collapseExample">
                                 <div class="row g-3">
 
-                                    {{-- ===============================
-                                SUDAH ADA PEMBAYARAN
-                            ================================ --}}
                                     @if (!is_null($pembayaran))
+                                        @if ($pembayaran->status === 'gagal')
+                                            {{-- Jika pembayaran gagal, tampilkan form upload ulang --}}
+                                            @include('components.berkas-upload', [
+                                                'pembayaran' => $pembayaran,
+                                                'gelombang' => $gelombang,
+                                            ])
+                                        @else
+                                            <div class="col-md-6">
+                                                <table class="table-sm table">
+                                                    <tr>
+                                                        <td class="fw-bold">Jenis</td>
+                                                        <td>Pendaftaran</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Jumlah</td>
+                                                        <td>{{ number_format($gelombang->registration_fee, 0, ',', '.') }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Status</td>
+                                                        <td>
+                                                            @if ($pembayaran->status === 'lunas')
+                                                                <span class="badge bg-success">LUNAS</span>
+                                                            @elseif ($pembayaran->status === 'pending')
+                                                                <span class="badge bg-warning">MENUNGGU VALIDASI</span>
+                                                            @else
+                                                                <span class="badge bg-secondary">BELUM LUNAS</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                </table>
 
-                                        <div class="col-md-6">
-                                            <table class="table-sm table">
-                                                <tr>
-                                                    <td class="fw-bold">Jenis</td>
-                                                    <td>Pendaftaran</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">Jumlah</td>
-                                                    <td>Rp 200.000</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fw-bold">Status</td>
-                                                    <td>
-                                                        @if ($pembayaran->status === 'lunas')
-                                                            <span class="badge bg-success">LUNAS</span>
-                                                        @elseif ($pembayaran->status === 'pending')
-                                                            <span class="badge bg-warning">MENUNGGU VALIDASI</span>
-                                                        @else
-                                                            <span class="badge bg-secondary">BELUM LUNAS</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            </table>
-
-                                            <p class="text-muted small">
-                                                Bukti pembayaran sudah diupload.
-                                                @if ($pembayaran->status === 'pending')
-                                                    Menunggu validasi admin.
-                                                @endif
-                                            </p>
-                                        </div>
-
-                                        <div class="col-md-6 d-flex align-items-center">
-                                            <button class="btn btn-secondary w-100" disabled>
-                                                Bukti Pembayaran Sudah Diupload
-                                            </button>
-                                        </div>
-
-                                        {{-- ===============================
-                                BELUM ADA PEMBAYARAN
-                            ================================ --}}
-                                    @else
-                                        {{-- ALERT INFO --}}
-                                        <div class="col-12">
-                                            <div class="alert alert-info d-flex align-items-start">
-                                                <i class="mdi mdi-information-outline fs-4 me-2"></i>
-                                                <div>
-                                                    <strong>Informasi Pembayaran</strong><br>
-                                                    Biaya formulir pendaftaran sebesar
-                                                    <strong>Rp 200.000</strong>.
-                                                    Silakan transfer ke rekening tertera,
-                                                    lalu upload bukti pembayaran sebelum melanjutkan.
-                                                </div>
+                                                <p class="text-muted small">
+                                                    Bukti pembayaran sudah diupload.
+                                                    @if ($pembayaran->status === 'pending')
+                                                        Menunggu validasi admin.
+                                                    @endif
+                                                </p>
                                             </div>
-                                        </div>
 
-                                        {{-- FORM --}}
-                                        <div class="col-12">
-                                            <form action="{{ route('uploadbukti') }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Jumlah Pembayaran</label>
-                                                    <input type="text" id="amount_display" class="form-control"
-                                                        value="Rp 200.000" readonly>
-
-                                                    <!-- nilai asli untuk backend -->
-                                                    <input type="hidden" name="amount" id="amount" value="200000">
-                                                </div>
-
-
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Upload Bukti Pembayaran</label>
-                                                    <input type="file" name="file_path"
-                                                        class="form-control @error('file_path') is-invalid @enderror"
-                                                        required>
-                                                    @error('file_path')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-
-                                                <button class="btn btn-primary w-100">
-                                                    Upload Bukti Transaksi
+                                            <div class="col-md-6 d-flex align-items-center">
+                                                <button class="btn btn-secondary w-100" disabled>
+                                                    Bukti Pembayaran Sudah Diupload
                                                 </button>
-                                            </form>
-                                        </div>
-
+                                            </div>
+                                        @endif
+                                    @else
+                                        {{-- Belum ada pembayaran, tampilkan form upload --}}
+                                        @include('components.upload-pembayaran', ['gelombang' => $gelombang])
                                     @endif
+
 
                                     {{-- ALERT SESSION --}}
                                     <div class="col-12">

@@ -16,8 +16,8 @@
             data-id="{{ $id }}"
             data-tahun-ajaran-id="{{ $tahun_ajaran_id }}"
             data-name="{{ $name }}"
-            data-start-date="{{ $start_date }}"
-            data-end-date="{{ $end_date }}"
+            data-start-date="{{ \Carbon\Carbon::parse($start_date)->format('Y-m-d') }}"
+            data-end-date="{{ \Carbon\Carbon::parse($end_date)->format('Y-m-d')}}"
             data-quota="{{ $quota }}"
             data-registration-fee="{{ $registration_fee }}"
             data-status="{{ $status }}">

@@ -75,35 +75,28 @@
                                                 <td>{{ $item->nama_ayah }}</td>
                                                 <td>{{ $item->telepon }}</td>
                                                 @php
-                                                    $countPeriksa = 0;
-                                                    $countValid = 0;
-                                                    $countTidakValid = 0;
+                                                $totalBerkas = $item->berkas->count();
 
-                                                    foreach ($item->berkas as $data) {
-                                                        if ($data->status === 'PERIKSA') {
-                                                            $countPeriksa++;
-                                                        } elseif ($data->status === 'VALID') {
-                                                            $countValid++;
-                                                        } elseif ($data->status === 'TIDAK_VALID') {
-                                                            $countTidakValid++;
-                                                        }
-                                                    }
+                                                $countValid = $item->berkas->where('status', 'VALID')->count();
+                                                $countPeriksa = $item->berkas->where('status', 'PERIKSA')->count();
+                                                $countTidakValid = $item->berkas->where('status', 'TIDAK_VALID')->count();
 
-                                                    if ($countTidakValid > 0) {
-                                                        $overallStatus = 'TIDAK VALID';
-                                                        $badgeClass = 'badge-danger';
-                                                    } elseif ($countPeriksa >= $countValid) {
-                                                        $overallStatus = 'PERIKSA';
-                                                        $badgeClass = 'badge-warning';
-                                                    } else {
-                                                        $overallStatus = 'VALID';
-                                                        $badgeClass = 'badge-success';
-                                                    }
-                                                @endphp
+                                                if ($countTidakValid > 0) {
+                                                    $overallStatus = 'TIDAK VALID';
+                                                    $badgeClass = 'badge-danger';
+                                                } elseif ($countValid === $totalBerkas && $totalBerkas > 0) {
+                                                    $overallStatus = 'VALID';
+                                                    $badgeClass = 'badge-success';
+                                                } else {
+                                                    $overallStatus = 'PERIKSA';
+                                                    $badgeClass = 'badge-warning';
+                                                }
+                                            @endphp
 
-                                                <td>
-                                                    <label class="badge {{ $badgeClass }}">{{ $overallStatus }}</label>
-                                                </td>
+                                            <td>
+                                                <span class="badge {{ $badgeClass }}">{{ $overallStatus }}</span>
+                                            </td>
+
                                                 <td>
                                                     <button type="button" class="btn btn-success btn-sm"
                                                         data-bs-toggle="modal" data-bs-target="#validasiModal"

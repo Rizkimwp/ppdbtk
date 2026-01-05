@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGelombangRequest;
+use App\Http\Requests\UpdateGelombangRequest;
 use App\Models\Gelombang;
 use App\Models\TahunAjaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class GelombangController extends Controller
@@ -69,46 +71,41 @@ class GelombangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
-{
-    $validator = Validator::make($request->all(), [
-        'edit_mulai' => ['required', 'date'],
-        'edit_selesai' => ['required', 'date', 'after_or_equal:edit_mulai'],
-    ]);
+    public function update(UpdateGelombangRequest $request, $id)
+    {
+        try {
+            $gelombang = Gelombang::findOrFail($id);
+            $gelombang->update($request->validated());
 
-    if ($validator->fails()) {
-        return back()
-                    ->withErrors($validator)
-                    ->withInput();
+
+            return redirect()->route('gelombang.index')
+                ->with('success', 'Data gelombang berhasil diperbarui.');
+        } catch (\Exception $e) {
+
+
+            return redirect()->back()
+                ->with('error', 'Gagal memperbarui gelombang: ' . $e->getMessage())
+                ->withInput();
+        }
     }
-
-    $tahunAjaran = Gelombang::findOrFail($id);
-    $tahunAjaran->mulai = $request->edit_mulai;
-    $tahunAjaran->selesai = $request->edit_selesai;
-    $tahunAjaran->save();
-
-    return redirect()->route('gelombang.index') // Ganti dengan nama route redirect setelah update
-                    ->with('success', 'Data berhasil diperbarui.');
-}
-
 
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
-    try {
-        // Cari data berdasarkan ID
-        $item = Gelombang::findOrFail($id);
+    {
+        try {
+            // Cari data berdasarkan ID
+            $item = Gelombang::findOrFail($id);
 
-        // Hapus data
-        $item->delete();
+            // Hapus data
+            $item->delete();
 
-        return redirect()->back()->with('success', 'Data berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+            return redirect()->back()->with('success', 'Data berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
-}
 
 }
